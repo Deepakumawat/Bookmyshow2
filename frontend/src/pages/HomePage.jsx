@@ -74,16 +74,18 @@ export default function HomePage() {
     return () => clearInterval(t);
   }, [bannerSlides.length]);
 
-  // Lazy load each tab
+  // Track which tabs have already fetched from API
+  const fetchedRef = useRef({ Movies: false, Events: false, Sports: false, Plays: false });
+
+  // Lazy load each tab — always fires once per tab, fallback data shows while loading
   useEffect(() => {
-    if (activeTab === 'Movies') {
-      if (!movies.length)     loadMovies();
-      if (!comingSoon.length) loadComingSoon();
-      if (!premieres.length)  loadPremieres();
+    if (activeTab === 'Movies' && !fetchedRef.current.Movies) {
+      fetchedRef.current.Movies = true;
+      loadMovies(); loadComingSoon(); loadPremieres();
     }
-    if (activeTab === 'Events' && !events.length) loadEvents();
-    if (activeTab === 'Sports' && !sports.length) loadSports();
-    if (activeTab === 'Plays'  && !plays.length)  loadPlays();
+    if (activeTab === 'Events' && !fetchedRef.current.Events) { fetchedRef.current.Events = true; loadEvents(); }
+    if (activeTab === 'Sports' && !fetchedRef.current.Sports) { fetchedRef.current.Sports = true; loadSports(); }
+    if (activeTab === 'Plays'  && !fetchedRef.current.Plays)  { fetchedRef.current.Plays  = true; loadPlays(); }
   }, [activeTab]);
 
   const loadMovies    = useCallback(async () => { setMoviesLoading(true); try { const d = await AIApiService.getMovies();    if (d?.length) setMovies(d); } catch {} finally { setMoviesLoading(false); } }, []);
