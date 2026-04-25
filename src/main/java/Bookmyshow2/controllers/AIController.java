@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -181,25 +183,25 @@ public class AIController {
                 if (tmEvents.size() >= 3) return ResponseEntity.ok(Map.of("events", tmEvents));
             }
             // Fallback to OpenAI
+            String today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
             String system = "You are an Indian live events database. Respond with valid JSON only.";
             String user = String.format("""
-                Generate a JSON object with key "events" containing an array of 12 upcoming
-                live events happening in Indian cities in April-May 2026.
-                Include concerts, music festivals, comedy shows, food festivals, cultural fests.
+                Today is %s. Generate a JSON object with key "events" containing 12 upcoming
+                live events happening in India in the next 60 days from today.
+                Include real-style concerts, music festivals, comedy shows, food festivals.
+                Use actual famous Indian artists: Arijit Singh, Diljit Dosanjh, AP Dhillon,
+                Badshah, Neha Kakkar, Shreya Ghoshal, Zakir Khan, Vir Das, Kanan Gill.
+                Use real famous venues: DY Patil Stadium Mumbai, Jawaharlal Nehru Stadium Delhi,
+                HICC Noida, Mahalaxmi Race Course, Bangalore Palace Grounds, KTPO Bangalore.
                 Each event must have:
-                  id (number), title (string), category (string — Concert/Comedy/Festival/Cultural),
-                  artist (string — performer or organizer name),
-                  venue (string — actual famous venue name), city (string — Indian city),
-                  date (string — April or May 2026 date like "25 Apr 2026"),
-                  time (string like "7:00 PM"), duration (string like "3 hours"),
-                  price (object with min and max in rupees),
+                  id (number), title (string), category (Concert/Comedy/Festival/Cultural),
+                  artist (string), venue (string), city (string — Indian city),
+                  date (string — use dates from %s onwards), time (string like "7:00 PM"),
+                  duration (string like "3 hours"), price (object with min and max in INR),
                   description (1-2 sentences), tags (array of 2-3 tags),
-                  language (string), ageLimit (string like "18+" or "All ages"),
-                  availableSeats (number 10-500).
-                Include events from cities: Mumbai, Delhi, Bangalore, Hyderabad, Chennai, Pune.
-                Focus on city: %s but include others too.
-                Return only JSON, nothing else.
-                """, city);
+                  language (string), ageLimit (string), availableSeats (number 50-5000).
+                Focus city: %s. Return only JSON.
+                """, today, today, city);
             String json = openAIService.askOpenAI("events-" + city, system, user);
             return ResponseEntity.ok(mapper.readTree(json));
         } catch (Exception e) {
@@ -217,25 +219,26 @@ public class AIController {
                 if (tmSports.size() >= 3) return ResponseEntity.ok(Map.of("sports", tmSports));
             }
             // Fallback to OpenAI
-            String system = "You are an Indian sports events database. Respond with valid JSON only.";
-            String user = """
-                Generate a JSON object with key "sports" containing an array of 14 upcoming
-                sports events and matches in India for April-May 2026.
-                Include IPL cricket matches, Pro Kabaddi, ISL football, badminton, tennis,
-                wrestling (WWE India), F1 (if any), kabaddi, chess tournaments.
-                Each sport event must have:
-                  id (number), title (string — e.g. "MI vs CSK — IPL 2026"),
-                  sport (string — Cricket/Football/Kabaddi/Badminton/Tennis/etc),
-                  league (string — IPL/ISL/PKL/etc),
-                  teams (array of 2 team names, or single performer for individual sport),
-                  venue (string — actual Indian stadium/arena name),
-                  city (string), date (string — April-May 2026),
-                  time (string), price (object with min and max in rupees),
-                  description (1 sentence), category (string — Team Sport/Individual Sport),
+            String today2 = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
+            String system2 = "You are an Indian sports events database. Respond with valid JSON only.";
+            String user2 = String.format("""
+                Today is %s. Generate a JSON object with key "sports" containing 14 upcoming
+                sports events in India in the next 60 days.
+                Include IPL 2026 cricket matches (MI, CSK, RCB, KKR, SRH, DC, RR, PBKS, GT, LSG),
+                Pro Kabaddi League, ISL football, BWF India Open badminton, chess tournaments.
+                Use real stadium names: Wankhede Stadium, Eden Gardens, Chepauk Stadium,
+                M. Chinnaswamy Stadium, Narendra Modi Stadium, Arun Jaitley Stadium.
+                Each event must have:
+                  id (number), title (string like "MI vs RCB — IPL 2026"),
+                  sport (Cricket/Football/Kabaddi/Badminton/Tennis/etc),
+                  league (IPL/ISL/PKL/etc), teams (array of 2 teams),
+                  venue (string), city (string), date (dates from %s onwards),
+                  time (string), price (object with min and max in INR),
+                  description (1 sentence), category (Team Sport/Individual Sport),
                   availableSeats (number), tags (array).
-                Return only JSON, nothing else.
-                """;
-            String json = openAIService.askOpenAI("sports-india", system, user);
+                Return only JSON.
+                """, today2, today2);
+            String json = openAIService.askOpenAI("sports-india", system2, user2);
             return ResponseEntity.ok(mapper.readTree(json));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
@@ -252,21 +255,24 @@ public class AIController {
                 if (tmPlays.size() >= 3) return ResponseEntity.ok(Map.of("plays", tmPlays));
             }
             // Fallback to OpenAI
-            String system = "You are an Indian theatre and plays database. Respond with valid JSON only.";
-            String user = String.format("""
-                Generate a JSON object with key "plays" containing 10 upcoming theatre plays
-                and dramatic performances in Indian cities in April-May 2026.
-                Include Hindi, English, and regional language plays.
+            String today3 = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
+            String system3 = "You are an Indian theatre and plays database. Respond with valid JSON only.";
+            String user3 = String.format("""
+                Today is %s. Generate a JSON object with key "plays" containing 10 upcoming
+                theatre plays and performances in India in the next 60 days.
+                Use real theatre venues: Prithvi Theatre Mumbai, NCPA Mumbai, Kamani Auditorium Delhi,
+                Shri Ram Centre Delhi, Ranga Shankara Bangalore, Chowdiah Memorial Hall Bangalore.
+                Include Hindi, English, Marathi and regional language plays.
                 Each play must have:
-                  id (number), title (string), language (string), genre (string — Drama/Comedy/Musical/etc),
-                  director (string), cast (array), venue (string — actual theatre name),
-                  city (string — Indian city), date (string), time (string),
-                  duration (string), price (object with min and max),
+                  id (number), title (string), language (string),
+                  genre (Drama/Comedy/Musical/Tragedy),
+                  director (string), cast (array of 2-3 actors),
+                  venue (string), city (string), date (dates from %s onwards),
+                  time (string), duration (string), price (object with min and max in INR),
                   description (2 sentences), ageLimit (string), availableSeats (number).
-                Focus on city: %s but include other cities.
-                Return only JSON, nothing else.
-                """, city);
-            String json = openAIService.askOpenAI("plays-" + city, system, user);
+                Focus city: %s. Return only JSON.
+                """, today3, today3, city);
+            String json = openAIService.askOpenAI("plays-" + city, system3, user3);
             return ResponseEntity.ok(mapper.readTree(json));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
