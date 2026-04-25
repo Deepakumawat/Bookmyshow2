@@ -1,0 +1,134 @@
+/* ============ BookingConfirmationPage ============ */
+.bcon-body { padding: 40px 0 80px; max-width: 600px; margin: 0 auto; }
+
+/* Success Icon */
+.bcon-success-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 32px;
+  gap: 10px;
+}
+.bcon-check-circle {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; color: white;
+  box-shadow: 0 8px 32px rgba(39, 174, 96, 0.4);
+  animation: popIn 0.4s ease;
+}
+@keyframes popIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.bcon-title { font-size: 28px; font-weight: 800; color: var(--bms-text); }
+.bcon-subtitle { font-size: 15px; color: var(--bms-text-muted); }
+.bcon-demo-note {
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid var(--bms-yellow);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--bms-yellow);
+  margin-top: 8px;
+}
+
+/* Ticket */
+.bcon-ticket {
+  background: var(--bms-card);
+  border: 1px solid var(--bms-border);
+  border-radius: var(--bms-radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: var(--bms-shadow);
+}
+.bcon-ticket-header {
+  background: var(--bms-red);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bcon-logo { font-size: 20px; font-weight: 800; color: white; }
+.bcon-logo span { color: rgba(255,255,255,0.7); }
+.bcon-booking-id { display: flex; flex-direction: column; align-items: flex-end; }
+.bcon-booking-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.7); }
+.bcon-booking-val { font-size: 15px; font-weight: 800; color: white; }
+
+/* Divider */
+.bcon-ticket-divider {
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  background: var(--bms-card);
+}
+.bcon-notch {
+  position: absolute;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--bms-bg-dark);
+  border: 1px solid var(--bms-border);
+  top: 50%; transform: translateY(-50%);
+}
+.bcon-notch.left { left: -10px; }
+.bcon-notch.right { right: -10px; }
+.bcon-dashes {
+  flex: 1;
+  margin: 0 14px;
+  border-top: 2px dashed var(--bms-border);
+}
+
+/* Body */
+.bcon-ticket-body { padding: 20px 24px; }
+.bcon-movie-name { font-size: 22px; font-weight: 800; color: var(--bms-text); margin-bottom: 20px; }
+.bcon-details-grid { display: flex; flex-direction: column; gap: 12px; }
+.bcon-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bms-surface);
+  border-radius: 8px;
+}
+.bcon-detail.highlight { background: rgba(228,27,50,0.1); border: 1px solid rgba(228,27,50,0.3); }
+.bcon-detail-icon { font-size: 18px; flex-shrink: 0; }
+.bcon-detail-label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--bms-text-dim); margin-bottom: 2px; }
+.bcon-detail-value { display: block; font-size: 15px; font-weight: 600; color: var(--bms-text); }
+.bcon-detail.highlight .bcon-detail-value { color: var(--bms-red); font-size: 20px; font-weight: 800; }
+
+/* Barcode */
+.bcon-ticket-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--bms-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.bcon-barcode {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 40px;
+}
+.bcon-bar { width: 3px; border-radius: 1px; }
+.bcon-barcode-text { font-size: 11px; color: var(--bms-text-dim); letter-spacing: 2px; }
+
+/* Instructions */
+.bcon-instructions {
+  background: var(--bms-card);
+  border: 1px solid var(--bms-border);
+  border-radius: var(--bms-radius);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.bcon-inst-title { font-size: 14px; font-weight: 700; color: var(--bms-text); margin-bottom: 12px; }
+.bcon-inst-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.bcon-inst-list li { font-size: 13px; color: var(--bms-text-muted); line-height: 1.5; }
+
+/* Actions */
+.bcon-actions { display: flex; gap: 12px; flex-wrap: wrap; }

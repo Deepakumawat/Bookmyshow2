@@ -1,0 +1,409 @@
+/* ==========================================
+   TheatreListPage - Modern Design
+   ========================================== */
+
+.theatre-list-page {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* Header */
+.theatre-page-header {
+  background: linear-gradient(135deg, var(--primary) 0%, #c81426 100%);
+  color: white;
+  padding: 40px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.btn-back {
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: white;
+}
+
+.header-content h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.header-content p {
+  font-size: 14px;
+  margin: 4px 0 0 0;
+  opacity: 0.9;
+}
+
+/* Main Container */
+.theatre-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+}
+
+/* Filters Section */
+.filters-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.filters-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 16px 0;
+  color: var(--text-primary);
+}
+
+/* City Selector */
+.city-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.city-button {
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.city-button:hover {
+  border-color: var(--primary);
+  background: rgba(228, 27, 50, 0.05);
+}
+
+.city-button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(228, 27, 50, 0.2);
+}
+
+/* Date Input */
+.date-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(228, 27, 50, 0.1);
+}
+
+/* Theatres List Section */
+.theatres-list-section {
+  flex: 1;
+}
+
+.results-header {
+  margin-bottom: 32px;
+}
+
+.results-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.result-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 40px;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(228, 27, 50, 0.2);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Error & Empty States */
+.error-message,
+.empty-state {
+  padding: 40px 20px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error-message {
+  background: rgba(220, 38, 38, 0.1);
+  border-left: 4px solid #dc2626;
+  color: #dc2626;
+}
+
+.empty-state {
+  background: rgba(107, 114, 128, 0.05);
+  color: var(--text-secondary);
+}
+
+/* Theatres List */
+.theatres-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.theatre-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.theatre-item:hover {
+  border-color: var(--primary);
+  box-shadow: 0 8px 24px rgba(228, 27, 50, 0.1);
+  transform: translateY(-2px);
+}
+
+.theatre-main-info {
+  flex: 1;
+}
+
+.theatre-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.theatre-address {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+}
+
+.theatre-specs {
+  display: flex;
+  gap: 16px;
+}
+
+.spec-item {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Amenities */
+.theatre-amenities {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.amenity-chip {
+  background: rgba(228, 27, 50, 0.08);
+  border: 1px solid rgba(228, 27, 50, 0.2);
+  color: var(--primary);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Button */
+.btn-view-shows {
+  padding: 12px 24px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.btn-view-shows:hover {
+  background: #c81426;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(228, 27, 50, 0.3);
+}
+
+.btn-view-shows:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .theatre-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .filters-section {
+    position: static;
+  }
+
+  .theatre-item {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .theatre-amenities,
+  .btn-view-shows {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .theatre-page-header {
+    padding: 28px 16px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-content h1 {
+    font-size: 24px;
+  }
+
+  .theatre-container {
+    padding: 24px 16px;
+  }
+
+  .filters-section {
+    padding: 20px;
+  }
+
+  .theatre-item {
+    padding: 16px;
+  }
+
+  .theatre-name {
+    font-size: 15px;
+  }
+
+  .theatre-specs {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .theatre-page-header {
+    padding: 20px 12px;
+  }
+
+  .header-content {
+    gap: 12px;
+  }
+
+  .header-content h1 {
+    font-size: 20px;
+  }
+
+  .theatre-container {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .city-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .theatre-item {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .theatre-amenities {
+    flex-direction: column;
+  }
+
+  .amenity-chip {
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-view-shows {
+    width: 100%;
+    text-align: center;
+  }
+}

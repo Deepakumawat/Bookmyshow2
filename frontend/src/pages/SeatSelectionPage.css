@@ -1,0 +1,154 @@
+/* ============ SeatSelectionPage ============ */
+.bss-info-bar {
+  background: var(--bms-header-bg);
+  border-bottom: 1px solid var(--bms-border);
+  padding: 14px 0;
+  position: sticky;
+  top: 112px;
+  z-index: 100;
+}
+.bss-info-inner { display: flex; align-items: center; gap: 16px; }
+.bss-movie-title { font-size: 16px; font-weight: 700; color: var(--bms-text); }
+.bss-meta { font-size: 13px; color: var(--bms-text-muted); margin-top: 2px; }
+
+/* Body */
+.bss-body { padding: 28px 0 160px; }
+
+/* Screen */
+.bss-screen-wrap { text-align: center; margin-bottom: 32px; }
+.bss-screen {
+  display: inline-block;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+  border: 2px solid rgba(255,255,255,0.2);
+  border-bottom: none;
+  border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+  color: rgba(255,255,255,0.5);
+  font-size: 11px;
+  letter-spacing: 3px;
+  padding: 10px 100px;
+  margin-bottom: 4px;
+}
+.bss-screen-shadow {
+  width: 60%;
+  height: 12px;
+  margin: 0 auto;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%);
+}
+
+/* Legend */
+.bss-legend {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+.bss-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--bms-text-muted); }
+.bss-legend-box {
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--bms-border);
+}
+.bss-legend-box.available { background: var(--bms-surface); }
+.bss-legend-box.selected { background: var(--bms-red); border-color: var(--bms-red); }
+.bss-legend-box.sold { background: #3d3d3d; border-color: #3d3d3d; }
+
+/* Category */
+.bss-category { margin-bottom: 24px; }
+.bss-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-left: 36px;
+}
+.bss-cat-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.bss-cat-label { font-size: 13px; font-weight: 700; color: var(--bms-text); }
+.bss-cat-price { font-size: 13px; color: var(--bms-text-muted); margin-left: 4px; }
+
+/* Seat Row */
+.bss-seat-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  justify-content: center;
+}
+.bss-row-label {
+  width: 28px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--bms-text-dim);
+}
+.bss-seats { display: flex; gap: 6px; }
+.bss-seat {
+  width: 32px; height: 32px;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid var(--bms-border);
+  background: var(--bms-surface);
+  color: var(--bms-text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bss-seat:hover:not(.sold) { border-color: var(--bms-red); color: var(--bms-red); }
+.bss-seat.selected { color: white; border-radius: 6px 6px 0 0; }
+.bss-seat.sold { background: #2a2a2a; border-color: #333; color: #555; cursor: not-allowed; }
+
+/* Bottom bar */
+.bss-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bms-card);
+  border-top: 2px solid var(--bms-red);
+  padding: 16px 0;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+  z-index: 200;
+}
+.bss-bottom-inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.bss-selected-info { flex: 1; }
+.bss-seat-list { font-size: 14px; font-weight: 600; color: var(--bms-text); }
+.bss-seat-count { font-size: 12px; color: var(--bms-text-muted); margin-top: 2px; }
+.bss-total { display: flex; flex-direction: column; align-items: flex-end; }
+.bss-total-label { font-size: 11px; color: var(--bms-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.bss-total-price { font-size: 22px; font-weight: 800; color: var(--bms-text); }
+.bss-error { font-size: 12px; color: #ff6b6b; }
+.bss-proceed-btn { font-size: 15px; padding: 12px 28px; white-space: nowrap; }
+.bss-proceed-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* New elements */
+.bss-format-badge {
+  display: inline-block;
+  background: var(--bms-red);
+  color: white; font-size: 10px; font-weight: 700;
+  padding: 1px 7px; border-radius: 4px;
+  margin-left: 8px; vertical-align: middle;
+}
+.bss-cat-icon { font-size: 14px; }
+.bss-cat-breakdown {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  font-size: 12px; font-weight: 600; margin-top: 3px;
+}
+.bss-total-wrap {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  min-width: 140px;
+}
+.bss-price-row {
+  display: flex; justify-content: space-between; gap: 16px;
+  font-size: 12px; color: var(--bms-text-muted); width: 100%;
+}
+.bss-price-row.total {
+  font-size: 16px; font-weight: 800; color: var(--bms-text);
+  border-top: 1px solid var(--bms-border); padding-top: 4px; margin-top: 2px;
+}

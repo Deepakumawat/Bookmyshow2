@@ -1,0 +1,130 @@
+/* ============ ShowTimingsPage ============ */
+.bst-header {
+  background: var(--bms-header-bg);
+  border-bottom: 1px solid var(--bms-border);
+  padding: 16px 0;
+}
+.bst-header-inner { display: flex; align-items: center; gap: 16px; }
+.bst-back-btn {
+  background: none;
+  color: var(--bms-text-muted);
+  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--bms-border);
+  transition: color 0.15s, border-color 0.15s;
+}
+.bst-back-btn:hover { color: var(--bms-text); border-color: var(--bms-text); }
+.bst-movie-title { font-size: 22px; font-weight: 800; color: var(--bms-text); }
+.bst-meta { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--bms-text-muted); margin-top: 4px; }
+.bst-dot { opacity: 0.4; }
+
+/* Date Bar */
+.bst-date-bar {
+  background: var(--bms-card);
+  border-bottom: 1px solid var(--bms-border);
+}
+.bst-dates {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 12px 0;
+}
+.bst-date-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: var(--bms-text-muted);
+  cursor: pointer;
+  min-width: 64px;
+  transition: all 0.2s;
+}
+.bst-date-btn:hover { border-color: var(--bms-border); color: var(--bms-text); }
+.bst-date-btn.active { background: var(--bms-red); border-color: var(--bms-red); color: white; }
+.bst-date-day { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.bst-date-num { font-size: 20px; font-weight: 800; line-height: 1.1; }
+.bst-date-mon { font-size: 10px; }
+
+/* Filter Bar */
+.bst-filter-bar {
+  background: var(--bms-nav-bg);
+  border-bottom: 1px solid var(--bms-border);
+  padding: 10px 0;
+}
+.bst-filter-inner { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bst-filter-label { font-size: 12px; font-weight: 700; color: var(--bms-text-dim); text-transform: uppercase; letter-spacing: 0.6px; }
+.bst-separator { color: var(--bms-border); font-size: 16px; }
+
+/* Body */
+.bst-body { padding: 24px 0 60px; display: flex; flex-direction: column; gap: 16px; }
+
+/* Theatre Card */
+.bst-theatre-card {
+  background: var(--bms-card);
+  border: 1px solid var(--bms-border);
+  border-radius: var(--bms-radius-lg);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.bst-theatre-card:hover { border-color: var(--bms-red); }
+.bst-theatre-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--bms-border);
+}
+.bst-theatre-name { font-size: 16px; font-weight: 700; color: var(--bms-text); margin-bottom: 4px; }
+.bst-theatre-address { font-size: 13px; color: var(--bms-text-muted); margin-bottom: 8px; }
+.bst-amenities { display: flex; gap: 6px; flex-wrap: wrap; }
+.bst-amenity {
+  background: var(--bms-surface);
+  border: 1px solid var(--bms-border);
+  color: var(--bms-text-muted);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.bst-theatre-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bms-surface);
+  border: 1px solid var(--bms-border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+}
+.bst-rating-val { font-size: 14px; font-weight: 700; color: var(--bms-text); }
+
+/* Shows Row */
+.bst-shows-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+}
+.bst-show-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: var(--bms-surface);
+  border: 1px solid var(--bms-border);
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  min-width: 90px;
+}
+.bst-show-btn:hover { border-color: var(--bms-red); background: var(--bms-red-glow); }
+.bst-show-btn.filling { border-color: var(--bms-yellow); }
+.bst-show-time { font-size: 15px; font-weight: 700; color: var(--bms-text); }
+.bst-show-format { font-size: 10px; color: var(--bms-red); font-weight: 700; letter-spacing: 0.5px; }
+.bst-show-price { font-size: 12px; color: var(--bms-text-muted); }
+.bst-filling-fast { font-size: 10px; color: var(--bms-yellow); font-weight: 600; }

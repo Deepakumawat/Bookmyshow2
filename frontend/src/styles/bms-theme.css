@@ -1,0 +1,173 @@
+/* ============================================================
+   BookMyShow Theme — Global Design System
+   ============================================================ */
+
+:root {
+  --bms-red: #e41b32;
+  --bms-red-dark: #c0152a;
+  --bms-red-glow: rgba(228, 27, 50, 0.3);
+  --bms-bg: #14213d;
+  --bms-bg-dark: #0a1628;
+  --bms-card: #1e2d47;
+  --bms-card-hover: #243452;
+  --bms-surface: #253450;
+  --bms-border: #2d3f5c;
+  --bms-text: #ffffff;
+  --bms-text-muted: #8a9bb8;
+  --bms-text-dim: #5a7095;
+  --bms-yellow: #f5a623;
+  --bms-green: #4caf50;
+  --bms-header-bg: #1a2540;
+  --bms-nav-bg: #0f1c35;
+  --bms-tag-bg: rgba(255,255,255,0.1);
+  --bms-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --bms-radius: 8px;
+  --bms-radius-lg: 16px;
+
+  /* ---- Compat: map old CSS vars from pre-BMS pages to dark theme ---- */
+  --bg-primary: var(--bms-bg-dark);
+  --bg-secondary: var(--bms-bg);
+  --card-bg: var(--bms-card);
+  --surface-bg: var(--bms-surface);
+  --text-primary: var(--bms-text);
+  --text-secondary: var(--bms-text-muted);
+  --border-color: var(--bms-border);
+  --input-bg: var(--bms-surface);
+  --primary: var(--bms-red);
+  --primary-dark: var(--bms-red-dark);
+  --primary-light: rgba(228,27,50,0.12);
+  --spacing-2: 0.5rem;
+  --spacing-3: 1rem;
+  --spacing-4: 1.5rem;
+  --spacing-5: 2rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--bms-bg-dark);
+  color: var(--bms-text);
+  min-height: 100vh;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+img { display: block; max-width: 100%; }
+input, select { font-family: inherit; }
+
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bms-bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--bms-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bms-red); }
+
+/* ---- Utility ---- */
+.bms-container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+.bms-section { padding: 32px 0; }
+.bms-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--bms-text);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bms-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--bms-border);
+  margin-left: 12px;
+}
+.bms-badge {
+  background: var(--bms-red);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+}
+.bms-tag {
+  background: var(--bms-tag-bg);
+  border: 1px solid var(--bms-border);
+  color: var(--bms-text-muted);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.bms-btn-red {
+  background: var(--bms-red);
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 24px;
+  border-radius: var(--bms-radius);
+  transition: background 0.2s, transform 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bms-btn-red:hover { background: var(--bms-red-dark); transform: translateY(-1px); }
+.bms-btn-outline {
+  background: transparent;
+  color: var(--bms-text);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 9px 20px;
+  border-radius: var(--bms-radius);
+  border: 1px solid var(--bms-border);
+  transition: border-color 0.2s, color 0.2s;
+}
+.bms-btn-outline:hover { border-color: var(--bms-red); color: var(--bms-red); }
+
+/* ---- Rating Star ---- */
+.bms-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--bms-yellow);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* ---- Spinner ---- */
+.bms-spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--bms-border);
+  border-top-color: var(--bms-red);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 40px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- Horizontal Scroll Row ---- */
+.bms-scroll-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+.bms-scroll-row::-webkit-scrollbar { height: 4px; }
+
+/* ---- Filter Pill ---- */
+.bms-pill {
+  background: var(--bms-card);
+  border: 1px solid var(--bms-border);
+  color: var(--bms-text-muted);
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.bms-pill:hover, .bms-pill.active {
+  background: var(--bms-red);
+  border-color: var(--bms-red);
+  color: white;
+}

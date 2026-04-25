@@ -1,0 +1,87 @@
+/* ============ Auth Pages (shared) ============ */
+.bauth-bg {
+  min-height: 100vh;
+  background: var(--bms-bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.bauth-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bms-card);
+  border: 1px solid var(--bms-border);
+  border-radius: var(--bms-radius-lg);
+  padding: 36px 32px;
+  box-shadow: var(--bms-shadow);
+}
+.bauth-logo {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--bms-text);
+  text-align: center;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+.bauth-logo span { color: var(--bms-red); }
+.bauth-title { font-size: 24px; font-weight: 800; color: var(--bms-text); text-align: center; margin-bottom: 6px; }
+.bauth-sub { font-size: 14px; color: var(--bms-text-muted); text-align: center; margin-bottom: 24px; }
+.bauth-error {
+  background: rgba(228,27,50,0.1);
+  border: 1px solid rgba(228,27,50,0.4);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #ff8a9a;
+  margin-bottom: 16px;
+}
+.bauth-form { display: flex; flex-direction: column; gap: 16px; }
+.bauth-field { display: flex; flex-direction: column; gap: 6px; }
+.bauth-label { font-size: 13px; font-weight: 600; color: var(--bms-text-muted); }
+.bauth-input {
+  background: var(--bms-surface);
+  border: 1px solid var(--bms-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: var(--bms-text);
+  font-size: 15px;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.bauth-input:focus { border-color: var(--bms-red); }
+.bauth-input::placeholder { color: var(--bms-text-dim); }
+.bauth-submit-btn {
+  width: 100%;
+  padding: 13px;
+  font-size: 16px;
+  justify-content: center;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.bauth-submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+.bauth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--bms-text-dim);
+  font-size: 13px;
+}
+.bauth-divider::before, .bauth-divider::after { content: ''; flex: 1; height: 1px; background: var(--bms-border); }
+.bauth-social-row { display: flex; flex-direction: column; gap: 10px; }
+.bauth-social-btn {
+  width: 100%;
+  background: var(--bms-surface);
+  border: 1px solid var(--bms-border);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--bms-text);
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color 0.2s, background 0.2s;
+}
+.bauth-social-btn:hover { border-color: var(--bms-text-muted); background: var(--bms-card-hover); }
+.bauth-switch { font-size: 14px; color: var(--bms-text-muted); text-align: center; margin-top: 20px; }
+.bauth-link { color: var(--bms-red); font-weight: 700; cursor: pointer; }
+.bauth-link:hover { text-decoration: underline; }

@@ -1,0 +1,289 @@
+/* ═══════════════ AI Agent ═══════════════════════════════════════ */
+
+/* ── Floating trigger button ─────────────────────────────────── */
+.aia-trigger {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bms-red); color: #fff;
+  border: none; border-radius: 50px;
+  padding: 12px 20px 12px 16px;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer; box-shadow: 0 4px 24px rgba(228,27,50,0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.aia-trigger:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(228,27,50,0.55); }
+.aia-trigger.open { padding: 14px; border-radius: 50%; }
+.aia-trigger-icon { font-size: 20px; }
+.aia-trigger-label { font-size: 14px; }
+.aia-pulse {
+  position: absolute; top: -3px; right: -3px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #4caf50;
+  box-shadow: 0 0 0 0 rgba(76,175,80,0.6);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(76,175,80,0.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(76,175,80,0); }
+  100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); }
+}
+
+/* ── Agent panel ─────────────────────────────────────────────── */
+.aia-panel {
+  position: fixed; bottom: 90px; right: 28px; z-index: 9998;
+  width: 400px; height: 600px;
+  background: var(--bms-card);
+  border: 1px solid var(--bms-border);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.25s ease-out;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (max-width: 480px) {
+  .aia-panel { width: calc(100vw - 16px); right: 8px; bottom: 80px; height: 70vh; }
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.aia-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #1a0828, #0a1628);
+  border-bottom: 1px solid var(--bms-border);
+  flex-shrink: 0;
+}
+.aia-header-left { display: flex; align-items: center; gap: 10px; }
+.aia-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--bms-red), #ff6b35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.aia-name { font-size: 14px; font-weight: 800; color: #fff; }
+.aia-status { display: flex; align-items: center; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.6); }
+.aia-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #4caf50; flex-shrink: 0;
+}
+.aia-close {
+  background: rgba(255,255,255,0.1); border: none; color: #fff;
+  width: 28px; height: 28px; border-radius: 50%;
+  font-size: 13px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.aia-close:hover { background: rgba(255,255,255,0.2); }
+
+/* ── Body / messages ─────────────────────────────────────────── */
+.aia-body {
+  flex: 1; overflow-y: auto; padding: 14px 12px;
+  display: flex; flex-direction: column; gap: 12px;
+  scrollbar-width: thin; scrollbar-color: var(--bms-border) transparent;
+}
+.aia-body::-webkit-scrollbar { width: 4px; }
+.aia-body::-webkit-scrollbar-thumb { background: var(--bms-border); border-radius: 2px; }
+
+/* ── Message rows ────────────────────────────────────────────── */
+.aia-msg-row { display: flex; gap: 8px; align-items: flex-start; }
+.aia-msg-row.user { flex-direction: row-reverse; }
+.aia-bot-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--bms-red), #ff6b35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0; margin-top: 2px;
+}
+.aia-bubble-wrap { display: flex; flex-direction: column; gap: 6px; max-width: 88%; }
+.aia-bubble {
+  padding: 10px 13px; border-radius: 14px;
+  font-size: 13px; line-height: 1.55; word-break: break-word;
+}
+.aia-bubble.assistant {
+  background: var(--bms-surface); color: var(--bms-text);
+  border-radius: 4px 14px 14px 14px;
+}
+.aia-bubble.user {
+  background: var(--bms-red); color: #fff;
+  border-radius: 14px 4px 14px 14px;
+}
+
+/* Thinking animation */
+.aia-thinking { display: flex; gap: 5px; align-items: center; padding: 12px 16px; }
+.aia-dot-anim {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--bms-text-muted);
+  animation: bounce 1.2s infinite ease-in-out;
+}
+.aia-dot-anim:nth-child(2) { animation-delay: 0.2s; }
+.aia-dot-anim:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%,80%,100% { transform: translateY(0); }
+  40%          { transform: translateY(-6px); }
+}
+
+/* Step chips */
+.aia-step {
+  font-size: 11px; color: var(--bms-text-muted);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--bms-border); border-radius: 12px;
+  padding: 3px 10px; width: fit-content;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── Quick actions ───────────────────────────────────────────── */
+.aia-quick-wrap { margin-top: 4px; }
+.aia-quick-label { font-size: 11px; font-weight: 700; color: var(--bms-text-dim); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.aia-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.aia-quick-btn {
+  background: var(--bms-surface); border: 1px solid var(--bms-border);
+  color: var(--bms-text-muted); font-size: 12px; font-weight: 500;
+  padding: 8px 10px; border-radius: 8px; text-align: left;
+  cursor: pointer; transition: all 0.2s;
+}
+.aia-quick-btn:hover { border-color: var(--bms-red); color: var(--bms-text); background: rgba(228,27,50,0.08); }
+
+/* ── Mini cards (movies / events / sports) ───────────────────── */
+.aia-cards { display: flex; flex-direction: column; gap: 8px; }
+.aia-mini-card {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bms-card); border: 1px solid var(--bms-border);
+  border-radius: 10px; padding: 10px 12px;
+  transition: border-color 0.2s;
+}
+.aia-mini-card:hover { border-color: var(--bms-red); }
+.aia-mini-poster { width: 40px; height: 60px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+.aia-mini-icon { font-size: 26px; flex-shrink: 0; }
+.aia-mini-info { flex: 1; min-width: 0; }
+.aia-mini-title { font-size: 13px; font-weight: 700; color: var(--bms-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+.aia-mini-meta { font-size: 11px; color: var(--bms-text-muted); }
+.aia-mini-btn {
+  background: var(--bms-red); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 6px 12px;
+  border-radius: 6px; border: none; cursor: pointer;
+  flex-shrink: 0; transition: background 0.2s;
+}
+.aia-mini-btn:hover { background: var(--bms-red-dark); }
+
+/* ── Theatre timing cards ────────────────────────────────────── */
+.aia-timings { display: flex; flex-direction: column; gap: 10px; }
+.aia-theatre-card {
+  background: var(--bms-card); border: 1px solid var(--bms-border);
+  border-radius: 10px; padding: 10px 12px;
+}
+.aia-theatre-name { font-size: 13px; font-weight: 700; color: var(--bms-text); margin-bottom: 2px; }
+.aia-theatre-area { font-size: 11px; color: var(--bms-text-muted); margin-bottom: 8px; }
+.aia-show-slots { display: flex; flex-wrap: wrap; gap: 7px; }
+.aia-show-slot {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: var(--bms-surface); border: 1px solid var(--bms-border);
+  border-radius: 8px; padding: 7px 12px; cursor: pointer;
+  transition: all 0.2s;
+}
+.aia-show-slot:hover { border-color: var(--bms-red); background: rgba(228,27,50,0.08); }
+.aia-slot-time { font-size: 13px; font-weight: 700; color: var(--bms-text); }
+.aia-slot-fmt  { font-size: 10px; color: var(--bms-red); font-weight: 600; }
+.aia-slot-price{ font-size: 11px; color: var(--bms-text-muted); }
+
+/* ── Seat selector ───────────────────────────────────────────── */
+.aia-seat-selector {
+  background: var(--bms-card); border: 1px solid var(--bms-border);
+  border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;
+}
+.aia-seat-title { font-size: 12px; color: var(--bms-text-muted); }
+.aia-seat-cats { display: flex; flex-direction: column; gap: 6px; }
+.aia-seat-cat {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bms-surface); border: 1.5px solid var(--bms-border);
+  border-radius: 8px; padding: 8px 10px; cursor: pointer;
+  transition: all 0.2s; position: relative;
+}
+.aia-seat-cat:hover { border-color: var(--bms-red); }
+.aia-seat-cat.selected { border-color: var(--bms-red); background: rgba(228,27,50,0.08); }
+.aia-seat-icon { font-size: 18px; flex-shrink: 0; }
+.aia-seat-info { flex: 1; }
+.aia-seat-label { font-size: 12px; font-weight: 700; color: var(--bms-text); }
+.aia-seat-desc  { font-size: 10px; color: var(--bms-text-muted); }
+.aia-seat-price { font-size: 12px; font-weight: 800; color: var(--bms-text); flex-shrink: 0; }
+.aia-seat-check {
+  position: absolute; top: 6px; right: 6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--bms-red); color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.aia-seat-footer { border-top: 1px solid var(--bms-border); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.aia-qty-row { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--bms-text-muted); }
+.aia-qty-ctrl { display: flex; align-items: center; gap: 10px; }
+.aia-qty-ctrl button {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bms-surface); border: 1px solid var(--bms-border);
+  color: var(--bms-text); font-size: 16px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.aia-qty-ctrl button:hover { background: var(--bms-red); border-color: var(--bms-red); color: #fff; }
+.aia-qty-ctrl span { font-size: 16px; font-weight: 800; color: var(--bms-text); min-width: 20px; text-align: center; }
+.aia-seat-total { font-size: 13px; font-weight: 800; color: var(--bms-text); }
+.aia-seat-conv  { font-size: 11px; color: var(--bms-text-muted); font-weight: 400; margin-left: 4px; }
+.aia-confirm-btn {
+  background: var(--bms-red); color: #fff; border: none;
+  font-size: 13px; font-weight: 700; padding: 10px;
+  border-radius: 8px; cursor: pointer; transition: background 0.2s;
+}
+.aia-confirm-btn:hover { background: var(--bms-red-dark); }
+
+/* ── Booking confirmed card ──────────────────────────────────── */
+.aia-booking-card {
+  background: linear-gradient(135deg, #0a2010, #0a1628);
+  border: 1px solid #27ae60; border-radius: 12px;
+  padding: 16px; display: flex; flex-direction: column;
+  align-items: center; gap: 10px;
+}
+.aia-booking-check {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #27ae60; color: #fff;
+  font-size: 22px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.aia-booking-id { font-size: 12px; color: #4caf50; font-weight: 600; }
+.aia-booking-rows { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.aia-booking-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--bms-text-muted); gap: 8px;
+}
+.aia-booking-row.total { font-size: 14px; font-weight: 800; color: var(--bms-text); border-top: 1px solid var(--bms-border); padding-top: 8px; }
+.aia-view-ticket-btn {
+  width: 100%; background: #27ae60; color: #fff; border: none;
+  font-size: 13px; font-weight: 700; padding: 10px;
+  border-radius: 8px; cursor: pointer; transition: background 0.2s;
+}
+.aia-view-ticket-btn:hover { background: #229954; }
+
+/* ── Footer input ────────────────────────────────────────────── */
+.aia-footer {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px; border-top: 1px solid var(--bms-border);
+  background: var(--bms-card); flex-shrink: 0;
+}
+.aia-input {
+  flex: 1; background: var(--bms-surface); border: 1px solid var(--bms-border);
+  border-radius: 10px; padding: 10px 14px;
+  color: var(--bms-text); font-size: 13px; outline: none;
+  transition: border-color 0.2s;
+}
+.aia-input:focus { border-color: var(--bms-red); }
+.aia-input::placeholder { color: var(--bms-text-dim); }
+.aia-input:disabled { opacity: 0.5; }
+.aia-send {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--bms-red); color: #fff; border: none;
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.15s; flex-shrink: 0;
+}
+.aia-send:hover:not(:disabled) { background: var(--bms-red-dark); transform: scale(1.05); }
+.aia-send:disabled { background: var(--bms-surface); color: var(--bms-text-dim); cursor: not-allowed; }

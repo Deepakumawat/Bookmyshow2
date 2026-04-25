@@ -1,0 +1,50 @@
+BOOKMYSHOW ADVANCED - QUICK START
+
+Your application is FULLY RUNNING now!
+
+Frontend:  http://localhost:5185
+Backend:   http://localhost:8080
+API:       http://localhost:8080/api
+
+TEST CREDENTIALS:
+Email: jofffhn@doe.com
+Password: password
+
+ALL 10 FEATURES IMPLEMENTED:
+1. Multiple Event Categories (5 types)
+2. Seat Selection UI (Interactive grid)
+3. Dynamic Pricing (Time/occupancy/tier based)
+4. Loyalty System (3 tiers: Silver, Gold, Platinum)
+5. Advanced Filters (Genre, language, rating, etc.)
+6. Theatre Management (Details, reviews, ratings)
+7. Booking History (Upcoming, past, cancelled)
+8. Payment Options (Cards, UPI, Wallet, EMI)
+9. Promo Codes (WEEKEND50, LOYALTY20, etc.)
+10. Notifications (Bell icon with dropdown)
+
+QUICK TEST:
+1. Go to http://localhost:5185
+2. Browse movies/theatres/offers
+3. Try applying a promo code
+4. Login with test credentials
+5. View loyalty points & bookings
+
+DESIGN FEATURES:
+- Professional header with search
+- Responsive grid layouts
+- Dark/Light theme toggle
+- Mobile-friendly UI
+- Smooth animations
+- Real BookMyShow aesthetic
+
+TEST DATA INCLUDED:
+- 3 Movies with showtimes
+- 4 Theatres with ratings
+- 4 Active promo offers
+- Loyalty tier benefits
+- Payment method examples
+- Theatre reviews
+
+EVERYTHING IS READY TO USE!
+
+Visit: http://localhost:5185
