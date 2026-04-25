@@ -20,11 +20,12 @@ export default function MovieDetailsPage() {
     // If we already have the movie from router state, skip the fetch
     if (location.state?.movie) { setLoading(false); return; }
     // Try TMDB details first, then fall back to AI movies list
-    fetch(`http://localhost:8080/api/movies/${id}`)
+    const API = import.meta.env.VITE_API_BASE || '';
+    fetch(`${API}/api/movies/${id}`)
       .then((r) => r.ok ? r.json() : Promise.reject())
       .then((data) => setMovie(data))
       .catch(() =>
-        fetch(`http://localhost:8080/api/ai/movies`)
+        fetch(`${API}/api/ai/movies`)
           .then((r) => r.json())
           .then((data) => setMovie((data.movies || []).find((m) => String(m.id) === String(id)) || null))
           .catch(() => setMovie(null))
