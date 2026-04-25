@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SpaRoutingConfig {
 
-    @RequestMapping(value = {"/{path:^(?!api|actuator|h2-console).*}", "/{path:^(?!api|actuator|h2-console).*}/**"})
+    @RequestMapping(value = {"/{path:^(?!api|actuator|h2-console|error).*}", "/{path:^(?!api|actuator|h2-console|error).*}/**"})
     public String forward() {
         return "forward:/index.html";
     }
