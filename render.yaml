@@ -11,5 +11,3 @@ services:
         sync: false
       - key: TMDB_API_KEY
         sync: false
-      - key: TICKETMASTER_API_KEY
-        sync: false

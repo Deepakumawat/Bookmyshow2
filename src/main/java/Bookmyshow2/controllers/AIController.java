@@ -4,7 +4,6 @@ import Bookmyshow2.models.*;
 import Bookmyshow2.repositories.*;
 import Bookmyshow2.service.AgentService;
 import Bookmyshow2.service.OpenAIService;
-import Bookmyshow2.service.TicketmasterService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +30,6 @@ public class AIController {
 
     @Autowired private OpenAIService openAIService;
     @Autowired private AgentService agentService;
-    @Autowired private TicketmasterService ticketmaster;
     @Autowired private ShowRepository showRepo;
     @Autowired private ShowSeatRepository showSeatRepo;
     @Autowired private SeatTypeShowRepository seatTypeShowRepo;
@@ -177,12 +175,6 @@ public class AIController {
     @GetMapping("/events")
     public ResponseEntity<?> getEvents(@RequestParam(defaultValue = "Mumbai") String city) {
         try {
-            // Try Ticketmaster first for real events
-            if (ticketmaster.isConfigured()) {
-                List<Map<String, Object>> tmEvents = ticketmaster.getEvents(city);
-                if (tmEvents.size() >= 3) return ResponseEntity.ok(Map.of("events", tmEvents));
-            }
-            // Fallback to OpenAI
             String today = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
             String system = "You are an Indian live events database. Respond with valid JSON only.";
             String user = String.format("""
@@ -213,12 +205,6 @@ public class AIController {
     @GetMapping("/sports")
     public ResponseEntity<?> getSports() {
         try {
-            // Try Ticketmaster first for real sports events
-            if (ticketmaster.isConfigured()) {
-                List<Map<String, Object>> tmSports = ticketmaster.getSports();
-                if (tmSports.size() >= 3) return ResponseEntity.ok(Map.of("sports", tmSports));
-            }
-            // Fallback to OpenAI
             String today2 = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
             String system2 = "You are an Indian sports events database. Respond with valid JSON only.";
             String user2 = String.format("""
@@ -249,12 +235,6 @@ public class AIController {
     @GetMapping("/plays")
     public ResponseEntity<?> getPlays(@RequestParam(defaultValue = "Mumbai") String city) {
         try {
-            // Try Ticketmaster first for real plays
-            if (ticketmaster.isConfigured()) {
-                List<Map<String, Object>> tmPlays = ticketmaster.getPlays(city);
-                if (tmPlays.size() >= 3) return ResponseEntity.ok(Map.of("plays", tmPlays));
-            }
-            // Fallback to OpenAI
             String today3 = LocalDate.now().format(DateTimeFormatter.ofPattern("dd MMM yyyy"));
             String system3 = "You are an Indian theatre and plays database. Respond with valid JSON only.";
             String user3 = String.format("""
