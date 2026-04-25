@@ -1,4 +1,5 @@
 import { BrowserRouter } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ThemeProvider } from './context/ThemeContext';
 import { SearchProvider } from './context/SearchContext';
 import { BookingProvider } from './context/BookingContext';
@@ -20,44 +21,48 @@ import AppRouter from './Router';
 import './styles/theme.css';
 import './App.css';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
 function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <NotificationProvider>
-          <UserProfileProvider>
-            <WishlistProvider>
-              <ReviewProvider>
-                <CategoryProvider>
-                  <FilterProvider>
-                    <SearchProvider>
-                      <BookingProvider>
-                        <SeatSelectionProvider>
-                          <PricingProvider>
-                            <LoyaltyProvider>
-                              <TheaterProvider>
-                                <PaymentProvider>
-                                  <OfferProvider>
-                                    <UserProvider>
-                                      <AppRouter />
-                                      <Toast />
-                                    </UserProvider>
-                                  </OfferProvider>
-                                </PaymentProvider>
-                              </TheaterProvider>
-                            </LoyaltyProvider>
-                          </PricingProvider>
-                        </SeatSelectionProvider>
-                      </BookingProvider>
-                    </SearchProvider>
-                  </FilterProvider>
-                </CategoryProvider>
-              </ReviewProvider>
-            </WishlistProvider>
-          </UserProfileProvider>
-        </NotificationProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <BrowserRouter>
+        <ThemeProvider>
+          <NotificationProvider>
+            <UserProvider>
+              <UserProfileProvider>
+                <WishlistProvider>
+                  <ReviewProvider>
+                    <CategoryProvider>
+                      <FilterProvider>
+                        <SearchProvider>
+                          <BookingProvider>
+                            <SeatSelectionProvider>
+                              <PricingProvider>
+                                <LoyaltyProvider>
+                                  <TheaterProvider>
+                                    <PaymentProvider>
+                                      <OfferProvider>
+                                        <AppRouter />
+                                        <Toast />
+                                      </OfferProvider>
+                                    </PaymentProvider>
+                                  </TheaterProvider>
+                                </LoyaltyProvider>
+                              </PricingProvider>
+                            </SeatSelectionProvider>
+                          </BookingProvider>
+                        </SearchProvider>
+                      </FilterProvider>
+                    </CategoryProvider>
+                  </ReviewProvider>
+                </WishlistProvider>
+              </UserProfileProvider>
+            </UserProvider>
+          </NotificationProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 
