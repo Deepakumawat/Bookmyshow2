@@ -37,8 +37,14 @@ export function UserProfileProvider({ children }) {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Always override name/email from real user context
-        const merged = { ...parsed, name: user?.name || parsed.name, email: user?.email || parsed.email };
+        const isMobileUser = user?.email?.endsWith('@mobile.bms');
+        const merged = {
+          ...parsed,
+          name: user?.name || parsed.name,
+          email: user?.email || parsed.email,
+          // For Google/email users, don't carry over stale phone from old localStorage
+          phone: isMobileUser ? parsed.phone : (user?.phone || ''),
+        };
         setUserProfile(merged);
         setEditFormData(merged);
         return;
