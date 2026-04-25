@@ -1,12 +1,33 @@
 package Bookmyshow2.dtos;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class BookTicketRequestDTO {
-    private int showId;
-    private List<Integer> seatIds;
-    private int userId;
+    private Long showId;
+    private List<Long> seatIds;
+    private Long userId;
+
+    public Long getShowId() {
+        return showId;
+    }
+
+    public void setShowId(Long showId) {
+        this.showId = showId;
+    }
+
+    public List<Long> getSeatIds() {
+        return seatIds;
+    }
+
+    public void setSeatIds(List<Long> seatIds) {
+        this.seatIds = seatIds;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 }

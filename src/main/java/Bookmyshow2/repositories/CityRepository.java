@@ -1,15 +1,12 @@
 package Bookmyshow2.repositories;
 
-import Bookmyshow2.models.User;
+import Bookmyshow2.models.City;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-
-    Optional<User> findByEmail(String email);
-
-    boolean existsByEmail(String email);
+public interface CityRepository extends JpaRepository<City, Long> {
+    Optional<City> findByNameIgnoreCase(String name);
 }

@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SeatsRepository extends JpaRepository<Seat, Integer> {
+public interface SeatsRepository extends JpaRepository<Seat, Long> {
 
-  // List<Seat> findAllById(List<Integer> seatIds);
+  // List<Seat> findAllById(List<Long> seatIds);
 
     @Override
     @NotNull
-    List<Seat> findAllById(@NotNull Iterable<Integer> integers);
+    List<Seat> findAllById(@NotNull Iterable<Long> longs);
 }

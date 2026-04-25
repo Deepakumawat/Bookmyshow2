@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ShowRepository extends JpaRepository<Show, Integer> {
+public interface ShowRepository extends JpaRepository<Show, Long> {
 
     @Override
     @NotNull
-    Optional<Show> findById(@NotNull Integer showId);
+    Optional<Show> findById(@NotNull Long showId);
 }
