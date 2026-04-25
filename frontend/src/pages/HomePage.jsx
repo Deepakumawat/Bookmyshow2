@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import BmsHeader from '../components/layout/BmsHeader';
 import AIApiService from '../services/AIApiService';
+import { FALLBACK_MOVIES, FALLBACK_COMING_SOON, FALLBACK_PREMIERES, FALLBACK_EVENTS, FALLBACK_SPORTS, FALLBACK_PLAYS } from '../data/fallbackData';
 import '../styles/bms-theme.css';
 import './HomePage.css';
 
@@ -34,10 +35,10 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'Movies');
   const city = localStorage.getItem('bms_city') || 'Jaipur';
 
-  // Movies state
-  const [movies,      setMovies]      = useState([]);
-  const [comingSoon,  setComingSoon]  = useState([]);
-  const [premieres,   setPremieres]   = useState([]);
+  // Movies state — pre-filled with fallback so cards never stay empty
+  const [movies,      setMovies]      = useState(FALLBACK_MOVIES);
+  const [comingSoon,  setComingSoon]  = useState(FALLBACK_COMING_SOON);
+  const [premieres,   setPremieres]   = useState(FALLBACK_PREMIERES);
   const [moviesLoading, setMoviesLoading] = useState(false);
   const [csLoading,   setCsLoading]   = useState(false);
   const [prLoading,   setPrLoading]   = useState(false);
@@ -47,10 +48,10 @@ export default function HomePage() {
   const [genreFilter,  setGenreFilter]  = useState('All');
   const [formatFilter, setFormatFilter] = useState('All');
 
-  // Events / Sports / Plays state
-  const [events,        setEvents]       = useState([]);
-  const [sports,        setSports]       = useState([]);
-  const [plays,         setPlays]        = useState([]);
+  // Events / Sports / Plays state — pre-filled with fallback
+  const [events,        setEvents]       = useState(FALLBACK_EVENTS);
+  const [sports,        setSports]       = useState(FALLBACK_SPORTS);
+  const [plays,         setPlays]        = useState(FALLBACK_PLAYS);
   const [eventsLoading, setEventsLoading]= useState(false);
   const [sportsLoading, setSportsLoading]= useState(false);
   const [playsLoading,  setPlaysLoading] = useState(false);
@@ -85,12 +86,12 @@ export default function HomePage() {
     if (activeTab === 'Plays'  && !plays.length)  loadPlays();
   }, [activeTab]);
 
-  const loadMovies    = useCallback(async () => { setMoviesLoading(true); try { setMovies(await AIApiService.getMovies()); } catch {} finally { setMoviesLoading(false); } }, []);
-  const loadComingSoon= useCallback(async () => { setCsLoading(true);     try { setComingSoon(await AIApiService.getComingSoon()); } catch {} finally { setCsLoading(false); } }, []);
-  const loadPremieres = useCallback(async () => { setPrLoading(true);     try { setPremieres(await AIApiService.getPremieres()); } catch {} finally { setPrLoading(false); } }, []);
-  const loadEvents    = useCallback(async () => { setEventsLoading(true); try { setEvents(await AIApiService.getEvents(eventsCity)); } catch {} finally { setEventsLoading(false); } }, [eventsCity]);
-  const loadSports    = useCallback(async () => { setSportsLoading(true); try { setSports(await AIApiService.getSports()); } catch {} finally { setSportsLoading(false); } }, []);
-  const loadPlays     = useCallback(async () => { setPlaysLoading(true);  try { setPlays(await AIApiService.getPlays(eventsCity)); } catch {} finally { setPlaysLoading(false); } }, [eventsCity]);
+  const loadMovies    = useCallback(async () => { setMoviesLoading(true); try { const d = await AIApiService.getMovies();    if (d?.length) setMovies(d); } catch {} finally { setMoviesLoading(false); } }, []);
+  const loadComingSoon= useCallback(async () => { setCsLoading(true);     try { const d = await AIApiService.getComingSoon(); if (d?.length) setComingSoon(d); } catch {} finally { setCsLoading(false); } }, []);
+  const loadPremieres = useCallback(async () => { setPrLoading(true);     try { const d = await AIApiService.getPremieres();  if (d?.length) setPremieres(d); } catch {} finally { setPrLoading(false); } }, []);
+  const loadEvents    = useCallback(async () => { setEventsLoading(true); try { const d = await AIApiService.getEvents(eventsCity); if (d?.length) setEvents(d); } catch {} finally { setEventsLoading(false); } }, [eventsCity]);
+  const loadSports    = useCallback(async () => { setSportsLoading(true); try { const d = await AIApiService.getSports();    if (d?.length) setSports(d); } catch {} finally { setSportsLoading(false); } }, []);
+  const loadPlays     = useCallback(async () => { setPlaysLoading(true);  try { const d = await AIApiService.getPlays(eventsCity); if (d?.length) setPlays(d); } catch {} finally { setPlaysLoading(false); } }, [eventsCity]);
 
   const filteredMovies = movies.filter((m) => {
     if (langFilter   !== 'All' && !m.languages?.includes(langFilter)) return false;
