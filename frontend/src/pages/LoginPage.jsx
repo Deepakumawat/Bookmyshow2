@@ -73,8 +73,8 @@ export default function LoginPage() {
         <div className="bauth-divider"><span>or</span></div>
 
         <div className="bauth-social-row">
-          <button className="bauth-social-btn">🔵 Continue with Google</button>
-          <button className="bauth-social-btn">📱 Continue with Mobile</button>
+          <button className="bauth-social-btn" onClick={() => alert('Google login coming soon!')} type="button">🔵 Continue with Google</button>
+          <button className="bauth-social-btn" onClick={() => alert('Mobile OTP coming soon!')} type="button">📱 Continue with Mobile</button>
         </div>
 
         <p className="bauth-switch">

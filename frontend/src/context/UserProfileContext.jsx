@@ -1,42 +1,53 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { UserContext } from './UserContext';
 
 export const UserProfileContext = createContext();
 
-const defaultUserProfile = {
-  id: 'user_' + Date.now(),
-  name: 'John Doe',
-  email: 'john@example.com',
-  phone: '+91-9876543210',
-  profilePicture: '👨‍💼',
-  city: 'Mumbai',
-  address: '123 Movie Street, Mumbai',
-  createdAt: new Date(),
-  preferences: {
-    favoriteGenres: ['Action', 'Drama', 'Sci-Fi'],
-    favoriteLanguages: ['Hindi', 'English'],
-    favoriteTheaters: ['PVR Cinemas Downtown', 'INOX Leisure'],
-    emailNotifications: true,
-    smsNotifications: true,
-    pushNotifications: true,
-  },
+const defaultPreferences = {
+  favoriteGenres: ['Action', 'Drama', 'Sci-Fi'],
+  favoriteLanguages: ['Hindi', 'English'],
+  favoriteTheaters: ['PVR Cinemas Downtown', 'INOX Leisure'],
+  emailNotifications: true,
+  smsNotifications: true,
+  pushNotifications: true,
 };
 
 export function UserProfileProvider({ children }) {
-  const [userProfile, setUserProfile] = useState(defaultUserProfile);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editFormData, setEditFormData] = useState(defaultUserProfile);
+  const { user } = useContext(UserContext);
 
-  // Initialize from localStorage
+  const buildProfile = (u) => ({
+    id: u?.id || 'user_' + Date.now(),
+    name: u?.name || 'Guest User',
+    email: u?.email || '',
+    phone: u?.phone || '',
+    profilePicture: '👨‍💼',
+    city: u?.city || 'Mumbai',
+    address: '',
+    createdAt: new Date(),
+    preferences: defaultPreferences,
+  });
+
+  const [userProfile, setUserProfile] = useState(() => buildProfile(user));
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState(() => buildProfile(user));
+
+  // Sync profile whenever logged-in user changes
   useEffect(() => {
     const saved = localStorage.getItem('userProfile');
     if (saved) {
       try {
-        setUserProfile(JSON.parse(saved));
-      } catch (e) {
-        console.error('Failed to load user profile:', e);
-      }
+        const parsed = JSON.parse(saved);
+        // Always override name/email from real user context
+        const merged = { ...parsed, name: user?.name || parsed.name, email: user?.email || parsed.email };
+        setUserProfile(merged);
+        setEditFormData(merged);
+        return;
+      } catch (e) {}
     }
-  }, []);
+    const fresh = buildProfile(user);
+    setUserProfile(fresh);
+    setEditFormData(fresh);
+  }, [user?.name, user?.email]);
 
   // Persist to localStorage
   useEffect(() => {
