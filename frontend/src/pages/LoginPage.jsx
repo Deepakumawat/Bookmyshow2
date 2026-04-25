@@ -22,6 +22,7 @@ export default function LoginPage() {
   // Mobile login state
   const [showMobile, setShowMobile] = useState(false);
   const [phone, setPhone] = useState('');
+  const [mobileName, setMobileName] = useState('');
   const [mobileLoading, setMobileLoading] = useState(false);
   const [mobileError, setMobileError] = useState('');
 
@@ -100,7 +101,7 @@ export default function LoginPage() {
         const regRes = await fetch(`${API}/api/mongo/users/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: `User ${phone.slice(-4)}`, email: pseudoEmail, city: 'Mumbai' }),
+          body: JSON.stringify({ name: mobileName.trim() || `User ${phone.slice(-4)}`, email: pseudoEmail, city: 'Mumbai' }),
         });
         userData = await regRes.json();
       }
@@ -154,6 +155,11 @@ export default function LoginPage() {
         ) : (
           <>
             <form className="bauth-form" onSubmit={handleMobileLogin}>
+              <div className="bauth-field">
+                <label className="bauth-label">Your Name</label>
+                <input className="bauth-input" type="text" placeholder="Enter your name"
+                  value={mobileName} onChange={(e) => setMobileName(e.target.value)} autoComplete="name" />
+              </div>
               <div className="bauth-field">
                 <label className="bauth-label">Mobile Number</label>
                 <input className="bauth-input" type="tel" placeholder="+91 Enter your mobile number"

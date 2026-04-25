@@ -91,8 +91,15 @@ export function UserProfilePage() {
 
           <div className="profile-info">
             <h1>{userProfile.name}</h1>
-            <p className="profile-email">{userProfile.email}</p>
-            <p className="profile-phone">{userProfile.phone}</p>
+            {userProfile.email && !userProfile.email.endsWith('@mobile.bms') && (
+              <p className="profile-email">{userProfile.email}</p>
+            )}
+            {userProfile.email && userProfile.email.endsWith('@mobile.bms') && (
+              <p className="profile-phone">📱 +91-{userProfile.email.replace('@mobile.bms', '')}</p>
+            )}
+            {userProfile.phone && !userProfile.email?.endsWith('@mobile.bms') && (
+              <p className="profile-phone">{userProfile.phone}</p>
+            )}
             <p className="profile-location">📍 {userProfile.city}</p>
           </div>
 
