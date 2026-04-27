@@ -123,6 +123,9 @@ export default function BmsHeader({ activeTab = 'Movies', onTabChange }) {
                     <div className="bms-user-menu-divider" />
                     <div className="bms-user-menu-item" onClick={() => { navigate('/profile'); setShowUserMenu(false); }}>👤 My Profile</div>
                     <div className="bms-user-menu-item" onClick={() => { navigate('/bookings'); setShowUserMenu(false); }}>🎟️ My Bookings</div>
+                    <div className="bms-user-menu-item" onClick={() => { navigate('/wishlist'); setShowUserMenu(false); }}>❤️ Wishlist</div>
+                    <div className="bms-user-menu-item" onClick={() => { navigate('/loyalty'); setShowUserMenu(false); }}>⭐ Loyalty Rewards</div>
+                    <div className="bms-user-menu-item" onClick={() => { navigate('/notifications'); setShowUserMenu(false); }}>🔔 Notifications</div>
                     <div className="bms-user-menu-divider" />
                     <div className="bms-user-menu-item logout" onClick={handleLogout}>🚪 Sign Out</div>
                   </div>

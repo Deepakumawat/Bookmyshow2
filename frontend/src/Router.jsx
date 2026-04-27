@@ -12,6 +12,11 @@ import PaymentMethodsPage from './pages/PaymentMethodsPage';
 import OffersPage from './pages/OffersPage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import EventBookingPage from './pages/EventBookingPage';
+import TheatreListPage from './pages/TheatreListPage';
+import EventDetailsPage from './pages/EventDetailsPage';
+import WishlistPage from './pages/WishlistPage';
+import LoyaltyPage from './pages/LoyaltyPage';
+import NotificationsPage from './pages/NotificationsPage';
 import SmartAgent from './components/SmartAgent/SmartAgent';
 
 export function AppRouter() {
@@ -40,6 +45,15 @@ export function AppRouter() {
 
       {/* Event / Sport / Play booking */}
       <Route path="/event-booking" element={<EventBookingPage />} />
+      <Route path="/event/:id" element={<EventDetailsPage />} />
+
+      {/* Theatres */}
+      <Route path="/theatres" element={<TheatreListPage />} />
+
+      {/* User extras */}
+      <Route path="/wishlist" element={<WishlistPage />} />
+      <Route path="/loyalty" element={<LoyaltyPage />} />
+      <Route path="/notifications" element={<NotificationsPage />} />
 
       {/* Catch-all */}
       <Route path="*" element={<HomePage />} />
