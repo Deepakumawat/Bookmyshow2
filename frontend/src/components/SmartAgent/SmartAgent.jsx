@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SmartAgent.css';
 
-const API_BASE = 'http://localhost:8080/api/ai';
+const API_BASE = `${import.meta.env.VITE_API_BASE || ''}/api/ai`;
 
 const QUICK_ACTIONS = [
   { label: '🎬 Action movies',     msg: 'Show me action movies playing now' },
@@ -338,6 +338,11 @@ export default function SmartAgent() {
                 }
               </div>
             </div>
+            <button
+              className="nova-clear"
+              title="Clear chat"
+              onClick={() => { setMessages([]); historyRef.current = []; greetedRef.current = false; setUserName(''); }}
+            >🗑️</button>
             <button className="nova-close" onClick={() => { setOpen(false); window.speechSynthesis.cancel(); stopRecordingCleanup(); }}>✕</button>
           </div>
 

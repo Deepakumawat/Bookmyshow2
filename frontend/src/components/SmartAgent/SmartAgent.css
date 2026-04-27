@@ -190,14 +190,14 @@
 @keyframes nova-bar-dance {
   from{transform:scaleY(0.25)} to{transform:scaleY(1)}
 }
-.nova-close {
+.nova-close, .nova-clear {
   background: rgba(255,255,255,0.1); border: none; color: #fff;
   width: 30px; height: 30px; border-radius: 50%;
   font-size: 13px; cursor: pointer; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   transition: background 0.15s;
 }
-.nova-close:hover { background: rgba(255,255,255,0.22); }
+.nova-close:hover, .nova-clear:hover { background: rgba(255,255,255,0.22); }
 
 /* ── Audio level bar ─────────────────────────────────────────── */
 .nova-level-wrap {

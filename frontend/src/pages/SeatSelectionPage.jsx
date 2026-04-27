@@ -43,6 +43,27 @@ export default function SeatSelectionPage() {
   const [reserved] = useState(generateReserved);
   const [selected, setSelected]   = useState(new Set());
   const [loading, setLoading]     = useState(false);
+  const [aiSuggested, setAiSuggested] = useState(new Set());
+
+  const suggestBestSeats = () => {
+    const allRows = SEAT_CATEGORIES.flatMap(c => c.rows);
+    const midCol = Math.floor(COLS / 2);
+    const suggestions = new Set();
+    // Prefer middle seats in Silver/Gold rows, away from reserved
+    const targetRows = ['F', 'G', 'E', 'D'];
+    for (const row of targetRows) {
+      for (let offset = 0; offset <= 2; offset++) {
+        const left  = `${row}${midCol - offset}`;
+        const right = `${row}${midCol + 1 + offset}`;
+        if (!reserved.has(left))  suggestions.add(left);
+        if (!reserved.has(right)) suggestions.add(right);
+        if (suggestions.size >= 4) break;
+      }
+      if (suggestions.size >= 4) break;
+    }
+    setAiSuggested(suggestions);
+    setSelected(new Set(suggestions));
+  };
 
   const toggleSeat = (seatId) => {
     if (reserved.has(seatId)) return;
@@ -128,7 +149,10 @@ export default function SeatSelectionPage() {
           <div className="bss-legend-item"><div className="bss-legend-box available" />Available</div>
           <div className="bss-legend-item"><div className="bss-legend-box selected" />Selected</div>
           <div className="bss-legend-item"><div className="bss-legend-box sold" />Sold Out</div>
+          <div className="bss-legend-item"><div className="bss-legend-box ai-suggested" />AI Pick</div>
+          <button className="bss-ai-suggest-btn" onClick={suggestBestSeats}>✨ AI Best Seats</button>
         </div>
+        <div className="bss-limit-hint">Max 10 tickets per booking</div>
 
         {SEAT_CATEGORIES.map(cat => (
           <div key={cat.id} className="bss-category">
@@ -143,18 +167,22 @@ export default function SeatSelectionPage() {
                 <div className="bss-seats">
                   {Array.from({ length: COLS }, (_, i) => {
                     const seatId = `${row}${i + 1}`;
-                    const isReserved = reserved.has(seatId);
-                    const isSelected = selected.has(seatId);
+                    const isReserved  = reserved.has(seatId);
+                    const isSelected  = selected.has(seatId);
+                    const isAiPick    = aiSuggested.has(seatId);
                     return (
-                      <button
-                        key={seatId}
-                        className={`bss-seat${isReserved ? ' sold' : isSelected ? ' selected' : ''}`}
-                        style={isSelected ? { background: cat.color, borderColor: cat.color } : {}}
-                        onClick={() => toggleSeat(seatId)}
-                        title={isReserved ? 'Sold' : seatId}
-                      >
-                        {i + 1}
-                      </button>
+                      <>
+                        {i === 6 && <div key={`aisle-${row}`} className="bss-aisle" />}
+                        <button
+                          key={seatId}
+                          className={`bss-seat${isReserved ? ' sold' : isSelected ? ' selected' : ''}${isAiPick && !isSelected ? ' ai-pick' : ''}`}
+                          style={isSelected ? { background: cat.color, borderColor: cat.color } : {}}
+                          onClick={() => toggleSeat(seatId)}
+                          title={isReserved ? 'Sold' : isAiPick ? `AI Pick — ${seatId}` : seatId}
+                        >
+                          {i + 1}
+                        </button>
+                      </>
                     );
                   })}
                 </div>
