@@ -13,3 +13,5 @@ services:
         sync: false
       - key: VITE_GOOGLE_CLIENT_ID
         value: 562767659756-luirrkk2vf1ld6jt7j6n7ujunu3c4kdb.apps.googleusercontent.com
+    dockerBuildArgs:
+      - VITE_GOOGLE_CLIENT_ID=562767659756-luirrkk2vf1ld6jt7j6n7ujunu3c4kdb.apps.googleusercontent.com
