@@ -24,8 +24,7 @@ public class EmailService {
             String format, List<String> seats, double totalAmount, String ticketId) {
 
         if (mailSender == null || fromEmail.isEmpty() || toEmail == null || toEmail.isEmpty()) {
-            System.out.println("[EMAIL] Mail not configured — skipping confirmation email");
-            return;
+            throw new IllegalStateException("Mail not configured: mailSender=" + (mailSender != null) + " from=" + fromEmail);
         }
 
         try {
@@ -71,6 +70,7 @@ public class EmailService {
             System.out.println("[EMAIL] Booking confirmation sent to: " + toEmail);
         } catch (Exception e) {
             System.out.println("[EMAIL] Failed to send email: " + e.getMessage());
+            throw new RuntimeException("SMTP error: " + e.getMessage(), e);
         }
     }
 }
