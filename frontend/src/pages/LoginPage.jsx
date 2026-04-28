@@ -166,9 +166,6 @@ export default function LoginPage() {
               <button className="bauth-social-btn" type="button" onClick={() => googleLogin()} disabled={loading}>
                 🔵 Continue with Google
               </button>
-              <button className="bauth-social-btn" type="button" onClick={() => setShowMobile(true)}>
-                📱 Continue with Mobile
-              </button>
             </div>
           </>
         ) : (
