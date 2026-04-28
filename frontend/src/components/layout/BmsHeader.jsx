@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../../services/AuthService';
+import { UserContext } from '../../context/UserContext';
 import './BmsHeader.css';
 
 const CITIES = [
@@ -14,10 +14,10 @@ const NAV_TABS = ['Movies', 'Stream', 'Events', 'Plays', 'Sports', 'Activities']
 
 export default function BmsHeader({ activeTab = 'Movies', onTabChange }) {
   const navigate = useNavigate();
+  const { user, logout } = useContext(UserContext);
   const [city, setCity] = useState(() => localStorage.getItem('bms_city') || 'Jaipur');
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [user, setUser] = useState(() => AuthService.getCurrentUser());
   const [showUserMenu, setShowUserMenu] = useState(false);
   const cityRef = useRef(null);
   const userRef = useRef(null);
@@ -43,8 +43,7 @@ export default function BmsHeader({ activeTab = 'Movies', onTabChange }) {
   };
 
   const handleLogout = () => {
-    AuthService.logout();
-    setUser(null);
+    logout();
     setShowUserMenu(false);
     navigate('/');
   };
@@ -102,7 +101,7 @@ export default function BmsHeader({ activeTab = 'Movies', onTabChange }) {
             </div>
 
             {/* Auth */}
-            {user ? (
+            {user?.isLoggedIn ? (
               <div className="bms-user-wrap" ref={userRef}>
                 <button
                   className="bms-user-btn"

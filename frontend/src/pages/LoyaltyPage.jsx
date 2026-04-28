@@ -3,7 +3,7 @@ import { useLoyalty } from '../context/LoyaltyContext';
 import { ThemeContext } from '../context/ThemeContext';
 import './LoyaltyPage.css';
 
-export function LoyaltyPage() {
+export default function LoyaltyPage() {
   const {
     loyaltyProfile,
     getTierPercentage,

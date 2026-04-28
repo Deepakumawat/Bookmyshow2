@@ -10,7 +10,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import IntegrationService from '../utils/integrationService';
 import './EventDetailsPage.css';
 
-export function EventDetailsPage() {
+export default function EventDetailsPage() {
   const { eventId } = useParams();
   const event = findEventById(eventId);
   const [selectedTab, setSelectedTab] = useState('overview');

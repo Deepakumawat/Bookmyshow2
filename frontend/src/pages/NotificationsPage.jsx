@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
 import './NotificationsPage.css';
 
-export function NotificationsPage() {
+export default function NotificationsPage() {
   const { isDark } = useContext(ThemeContext);
   const [notifications, setNotifications] = useState([
     {

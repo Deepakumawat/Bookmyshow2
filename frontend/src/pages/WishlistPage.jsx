@@ -5,7 +5,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import IntegrationService from '../utils/integrationService';
 import './WishlistPage.css';
 
-export function WishlistPage() {
+export default function WishlistPage() {
   const { wishlist, removeFromWishlist, getWishlistByType, clearWishlist } = useWishlist();
   const { isDark } = useContext(ThemeContext);
   const [selectedType, setSelectedType] = useState(null);

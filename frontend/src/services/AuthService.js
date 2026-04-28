@@ -66,6 +66,7 @@ class AuthService {
 
         // Store user data and token
         localStorage.setItem('user', JSON.stringify(userData));
+        window.dispatchEvent(new Event('auth-change'));
         if (response.token) {
           APIClient.setToken(response.token);
         }
@@ -85,6 +86,7 @@ class AuthService {
   logout() {
     APIClient.clearToken();
     localStorage.removeItem('user');
+    window.dispatchEvent(new Event('auth-change'));
   }
 
   /**
