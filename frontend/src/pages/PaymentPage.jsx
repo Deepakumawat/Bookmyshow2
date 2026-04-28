@@ -5,6 +5,22 @@ import { UserContext } from '../context/UserContext';
 import '../styles/bms-theme.css';
 import './PaymentPage.css';
 
+// Resolve logged-in user from either auth system
+function getLoggedInUser(contextUser) {
+  if (contextUser?.isLoggedIn && contextUser.email && !contextUser.email.includes('guest@')) {
+    return contextUser;
+  }
+  // Fallback: email/password login stored by AuthService
+  try {
+    const saved = localStorage.getItem('user');
+    if (saved) {
+      const u = JSON.parse(saved);
+      if (u?.email) return { email: u.email, name: u.name || u.email, id: u.id || '', isLoggedIn: true };
+    }
+  } catch (_) {}
+  return null;
+}
+
 const API = window.location.hostname === 'localhost'
   ? 'http://localhost:8080'
   : window.location.origin;
@@ -105,28 +121,30 @@ export default function PaymentPage() {
       existing.unshift(booking);
       localStorage.setItem('bms_bookings', JSON.stringify(existing));
 
-      // Call backend to save + send confirmation email to user
-      if (user?.email && user?.isLoggedIn) {
+      // Call backend to save + send confirmation email
+      const loggedInUser = getLoggedInUser(user);
+      if (loggedInUser) {
         try {
-          await fetch(`${API}/api/mongo/tickets/book`, {
+          const res = await fetch(`${API}/api/mongo/tickets/book`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              userId:        user.id || '',
-              userEmail:     user.email,
-              userName:      user.name || 'Guest',
+              userId:         loggedInUser.id || '',
+              userEmail:      loggedInUser.email,
+              userName:       loggedInUser.name || 'Guest',
               movieTitle,
-              theatreName:   venue,
-              showDate:      booking.date,
-              showTime:      time,
-              format:        state.showFormat || '2D',
+              theatreName:    venue,
+              showDate:       booking.date,
+              showTime:       time,
+              format:         state.showFormat || '2D',
               seats,
-              seatType:      seatTier || 'GOLD',
-              baseAmount:    state.ticketsTotal || grandTotal,
+              seatType:       seatTier || 'GOLD',
+              baseAmount:     state.ticketsTotal || grandTotal,
               convenienceFee: state.convenience || 0,
-              paymentMethod: paymentLabel,
+              paymentMethod:  paymentLabel,
             }),
           });
+          if (!res.ok) console.error('Booking API error:', await res.text());
         } catch (e) {
           console.error('Backend booking save failed:', e);
         }
