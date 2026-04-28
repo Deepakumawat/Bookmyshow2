@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNotification } from '../context/NotificationContext';
 import BmsHeader from '../components/layout/BmsHeader';
 import '../styles/bms-theme.css';
@@ -22,13 +22,16 @@ const TABS = [
 export default function NotificationsPage() {
   const { notifications: ctx, markAsRead, markAllAsRead, deleteNotification, addNotification } = useNotification();
   const [tab, setTab] = useState('all');
+  const seeded = useRef(false);
 
-  // Seed defaults once if context is empty
-  if (ctx.length === 0) {
-    DEFAULT_NOTIFICATIONS.forEach(n =>
-      addNotification({ type: n.type, title: n.title, message: n.message, icon: n.icon, priority: 'medium' })
-    );
-  }
+  useEffect(() => {
+    if (!seeded.current && ctx.length === 0) {
+      seeded.current = true;
+      DEFAULT_NOTIFICATIONS.forEach(n =>
+        addNotification({ type: n.type, title: n.title, message: n.message, icon: n.icon, priority: 'medium' })
+      );
+    }
+  }, []);
 
   const list = ctx.length > 0 ? ctx : DEFAULT_NOTIFICATIONS;
   const filtered = tab === 'all' ? list : list.filter(n => n.type === tab);
