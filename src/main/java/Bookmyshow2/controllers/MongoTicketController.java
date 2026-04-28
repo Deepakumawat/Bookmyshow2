@@ -123,7 +123,7 @@ public class MongoTicketController {
         try {
             emailService.sendBookingConfirmation(
                 email, "Test User", "Test Movie",
-                "Test Theatre", "Monday, 28 April 2026", "7:00 PM", "2D",
+                "PVR Cinemas", "Mumbai", "Monday, 28 April 2026", "7:00 PM", "2D",
                 List.of("A1", "A2"), 660.0, "TEST-" + System.currentTimeMillis()
             );
             return ResponseEntity.ok(Map.of("message", "Email sent to " + email));
