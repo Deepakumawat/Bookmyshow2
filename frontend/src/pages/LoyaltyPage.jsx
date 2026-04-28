@@ -4,23 +4,21 @@ import { ThemeContext } from '../context/ThemeContext';
 import './LoyaltyPage.css';
 
 export default function LoyaltyPage() {
-  const {
-    loyaltyProfile,
-    getTierPercentage,
-    getPointsToNextTier,
-    getActiveBenefits,
-    redeemPoints,
-  } = useLoyalty();
+  const { loyaltyState, redeemPoints, getPointsToNextTier } = useLoyalty();
   const { isDark } = useContext(ThemeContext);
 
   const [selectedRedemption, setSelectedRedemption] = useState(null);
   const [redeemAmount, setRedeemAmount] = useState(0);
 
-  const tier = loyaltyProfile.currentTier;
-  const points = loyaltyProfile.totalPoints;
-  const pointsToNext = getPointsToNextTier();
-  const tierProgress = getTierPercentage();
-  const benefits = getActiveBenefits();
+  const tierObj = loyaltyState.currentTier;
+  const tier = tierObj?.tier || 'Silver';
+  const points = loyaltyState.totalPoints || 0;
+  const pointsToNext = getPointsToNextTier() || 0;
+
+  const tierMaxPoints = { Bronze: 1000, Silver: 5000, Gold: 10000, Platinum: 10000 };
+  const tierMinPoints = { Bronze: 0, Silver: 1000, Gold: 5000, Platinum: 10000 };
+  const range = (tierMaxPoints[tier] || 5000) - (tierMinPoints[tier] || 0);
+  const tierProgress = tier === 'Platinum' ? 100 : Math.min(100, Math.round(((points - (tierMinPoints[tier] || 0)) / range) * 100));
 
   const redemptionOptions = [
     { id: 1, title: 'Movie Ticket Discount', points: 100, discount: '₹100' },

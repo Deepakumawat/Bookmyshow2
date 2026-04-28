@@ -1,56 +1,29 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ThemeContext } from '../context/ThemeContext';
+import { useNotification } from '../context/NotificationContext';
 import './NotificationsPage.css';
+
+const DEFAULT_NOTIFICATIONS = [
+  { id: 1, type: 'booking', title: 'Booking Confirmation', message: 'Your tickets for KGF Chapter 3 have been booked successfully', timestamp: '2 hours ago', read: false, icon: '✅' },
+  { id: 2, type: 'offer', title: 'Special Offer Available', message: 'Get 30% off on your next booking using code SPECIAL30', timestamp: '5 hours ago', read: false, icon: '🎉' },
+  { id: 3, type: 'reminder', title: 'Upcoming Movie Reminder', message: 'Don\'t miss "Pushpa 2" showing at PVR near you tonight!', timestamp: '1 day ago', read: true, icon: '🎬' },
+  { id: 4, type: 'loyalty', title: 'Points Earned', message: 'You earned 300 loyalty points from your last booking', timestamp: '2 days ago', read: true, icon: '⭐' },
+  { id: 5, type: 'offer', title: 'Weekend Special', message: 'Book any 2 tickets this weekend and get free popcorn!', timestamp: '3 days ago', read: true, icon: '🍿' },
+];
 
 export default function NotificationsPage() {
   const { isDark } = useContext(ThemeContext);
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: 'booking',
-      title: 'Booking Confirmation',
-      message: 'Your tickets for Inception have been booked successfully',
-      timestamp: '2 hours ago',
-      read: false,
-      icon: '✅',
-    },
-    {
-      id: 2,
-      type: 'offer',
-      title: 'Special Offer Available',
-      message: 'Get 30% off on your next booking using code SPECIAL30',
-      timestamp: '5 hours ago',
-      read: false,
-      icon: '🎉',
-    },
-    {
-      id: 3,
-      type: 'reminder',
-      title: 'Upcoming Movie Reminder',
-      message: 'Your favorite movie "Oppenheimer" is showing near you',
-      timestamp: '1 day ago',
-      read: true,
-      icon: '🎬',
-    },
-    {
-      id: 4,
-      type: 'loyalty',
-      title: 'Points Earned',
-      message: 'You earned 300 loyalty points from your last booking',
-      timestamp: '2 days ago',
-      read: true,
-      icon: '⭐',
-    },
-    {
-      id: 5,
-      type: 'update',
-      title: 'App Update Available',
-      message: 'New features and improvements are available in the latest version',
-      timestamp: '3 days ago',
-      read: true,
-      icon: '📱',
-    },
-  ]);
+  const { notifications: ctxNotifications, markAsRead, markAllAsRead, deleteNotification: ctxDelete, addNotification } = useNotification();
+
+  // Seed defaults only once if context is empty
+  useEffect(() => {
+    if (ctxNotifications.length === 0) {
+      DEFAULT_NOTIFICATIONS.forEach(n => addNotification({ type: n.type, title: n.title, message: n.message, icon: n.icon, priority: 'medium' }));
+    }
+  }, []);
+
+  const notifications = ctxNotifications.length > 0 ? ctxNotifications : DEFAULT_NOTIFICATIONS;
+  const deleteNotification = ctxDelete;
 
   const [selectedTab, setSelectedTab] = useState('all');
   const [preferences, setPreferences] = useState({
@@ -62,20 +35,6 @@ export default function NotificationsPage() {
     reminderEmails: true,
     loyaltyUpdates: true,
   });
-
-  const markAsRead = (id) => {
-    setNotifications(notifications.map((n) =>
-      n.id === id ? { ...n, read: true } : n
-    ));
-  };
-
-  const deleteNotification = (id) => {
-    setNotifications(notifications.filter((n) => n.id !== id));
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, read: true })));
-  };
 
   const filteredNotifications = selectedTab === 'all'
     ? notifications
