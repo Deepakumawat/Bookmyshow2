@@ -20,7 +20,7 @@ public class EmailService {
 
     public void sendBookingConfirmation(
             String toEmail, String userName, String movieTitle,
-            String theatreName, String showDate, String showTime,
+            String theatreName, String city, String showDate, String showTime,
             String format, List<String> seats, double totalAmount, String ticketId) {
 
         if (mailSender == null) {
@@ -38,7 +38,7 @@ public class EmailService {
             helper.setSubject("Booking Confirmed — " + movieTitle + " | BookMyShow");
 
             String seatsStr = String.join(", ", seats);
-            String html = buildHtml(userName, movieTitle, theatreName, showDate,
+            String html = buildHtml(userName, movieTitle, theatreName, city, showDate,
                     showTime, format, seatsStr, totalAmount, ticketId);
             helper.setText(html, true);
 
@@ -50,8 +50,11 @@ public class EmailService {
     }
 
     private String buildHtml(String userName, String movieTitle, String theatreName,
-            String showDate, String showTime, String format, String seatsStr,
+            String city, String showDate, String showTime, String format, String seatsStr,
             double totalAmount, String ticketId) {
+        String location = (theatreName != null && !theatreName.isEmpty())
+            ? theatreName + (city != null && !city.isEmpty() ? ", " + city : "")
+            : (city != null ? city : "");
         return """
             <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#0f172a;color:#e2e8f0;border-radius:12px;overflow:hidden;">
               <div style="background:#cc0000;padding:24px;text-align:center;">
@@ -64,7 +67,7 @@ public class EmailService {
                 <div style="background:#1a2332;border-radius:10px;padding:20px;margin:20px 0;border-left:4px solid #cc0000;">
                   <table style="width:100%%;border-collapse:collapse;">
                     <tr><td style="padding:8px 0;color:#64748b;width:140px;">Movie</td><td style="padding:8px 0;font-weight:bold;color:#e2e8f0;">%s</td></tr>
-                    <tr><td style="padding:8px 0;color:#64748b;">Theatre</td><td style="padding:8px 0;color:#e2e8f0;">%s</td></tr>
+                    <tr><td style="padding:8px 0;color:#64748b;">Location</td><td style="padding:8px 0;color:#e2e8f0;">%s</td></tr>
                     <tr><td style="padding:8px 0;color:#64748b;">Date</td><td style="padding:8px 0;color:#e2e8f0;">%s</td></tr>
                     <tr><td style="padding:8px 0;color:#64748b;">Time</td><td style="padding:8px 0;color:#e2e8f0;">%s</td></tr>
                     <tr><td style="padding:8px 0;color:#64748b;">Format</td><td style="padding:8px 0;color:#e2e8f0;">%s</td></tr>
@@ -77,7 +80,7 @@ public class EmailService {
                 <p style="color:#64748b;font-size:12px;">Thank you for choosing BookMyShow! 🍿</p>
               </div>
             </div>
-            """.formatted(userName, movieTitle, theatreName, showDate, showTime,
+            """.formatted(userName, movieTitle, location, showDate, showTime,
                     format, seatsStr, totalAmount, ticketId);
     }
 }

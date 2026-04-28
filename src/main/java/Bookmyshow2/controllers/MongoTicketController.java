@@ -70,7 +70,7 @@ public class MongoTicketController {
             try {
                 emailService.sendBookingConfirmation(
                     userEmail, userName, movieTitle,
-                    theatreName, showDate, showTime, format,
+                    theatreName, city, showDate, showTime, format,
                     seats, ticket.getTotalAmount(), ticket.getId()
                 );
             } catch (Exception emailEx) {

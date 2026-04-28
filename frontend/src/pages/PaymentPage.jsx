@@ -78,6 +78,7 @@ export default function PaymentPage() {
   // Works for both movie seats flow and event/sports flow
   const movieTitle  = state.movieTitle  || state.title  || 'Show';
   const venue       = state.theatreName || state.venue   || '';
+  const city        = state.city        || user?.city    || 'Mumbai';
   const time        = state.showTime    || state.time    || '';
   const grandTotal  = state.grandTotal  || state.totalAmount || 0;
   const seats       = state.seats       || [];
@@ -134,6 +135,7 @@ export default function PaymentPage() {
               userName:       loggedInUser.name || 'Guest',
               movieTitle,
               theatreName:    venue,
+              city,
               showDate:       booking.date,
               showTime:       time,
               format:         state.showFormat || '2D',
