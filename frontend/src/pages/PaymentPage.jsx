@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BmsHeader from '../components/layout/BmsHeader';
+import { UserContext } from '../context/UserContext';
 import '../styles/bms-theme.css';
 import './PaymentPage.css';
+
+const API = window.location.hostname === 'localhost'
+  ? 'http://localhost:8080'
+  : window.location.origin;
 
 const UPI_APPS = [
   { id: 'gpay',     label: 'Google Pay',  icon: '🔵', color: '#4285F4' },
@@ -25,8 +30,9 @@ const WALLETS = [
 ];
 
 export default function PaymentPage() {
-  const navigate = useNavigate();
-  const { state } = useLocation();
+  const navigate   = useNavigate();
+  const { state }  = useLocation();
+  const { user }   = useContext(UserContext);
 
   const [tab,        setTab]        = useState('upi');
   const [upiApp,     setUpiApp]     = useState(null);
@@ -75,9 +81,10 @@ export default function PaymentPage() {
     setProcessing(true);
     setStep('verifying');
     setTimeout(() => setStep('processing'), 1200);
-    setTimeout(() => {
+    setTimeout(async () => {
       setStep('done');
       const bookingId = 'BMS' + Math.floor(Math.random() * 9000000 + 1000000);
+      const paymentLabel = tab === 'upi' ? (upiApp ? UPI_APPS.find(u => u.id === upiApp)?.label : upiId) : tab;
       const booking = {
         bookingId,
         title: movieTitle,
@@ -89,13 +96,41 @@ export default function PaymentPage() {
         total: grandTotal,
         date: new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
         bookedAt: new Date().toISOString(),
-        paymentMethod: tab === 'upi' ? (upiApp ? UPI_APPS.find(u => u.id === upiApp)?.label : upiId) : tab,
+        paymentMethod: paymentLabel,
         type: state.type || 'movie',
       };
+
       // Save to localStorage
       const existing = JSON.parse(localStorage.getItem('bms_bookings') || '[]');
       existing.unshift(booking);
       localStorage.setItem('bms_bookings', JSON.stringify(existing));
+
+      // Call backend to save + send confirmation email to user
+      if (user?.email && user?.isLoggedIn) {
+        try {
+          await fetch(`${API}/api/mongo/tickets/book`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userId:        user.id || '',
+              userEmail:     user.email,
+              userName:      user.name || 'Guest',
+              movieTitle,
+              theatreName:   venue,
+              showDate:      booking.date,
+              showTime:      time,
+              format:        state.showFormat || '2D',
+              seats,
+              seatType:      seatTier || 'GOLD',
+              baseAmount:    state.ticketsTotal || grandTotal,
+              convenienceFee: state.convenience || 0,
+              paymentMethod: paymentLabel,
+            }),
+          });
+        } catch (e) {
+          console.error('Backend booking save failed:', e);
+        }
+      }
 
       navigate('/confirmation', { state: { booking } });
     }, 2800);
