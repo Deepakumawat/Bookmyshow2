@@ -1,26 +1,21 @@
 package Bookmyshow2.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import jakarta.mail.internet.MimeMessage;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class EmailService {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final String BREVO_API = "https://api.brevo.com/v3/smtp/email";
+    @Autowired(required = false)
+    private JavaMailSender mailSender;
 
-    @Value("${brevo.api.key:}")
-    private String brevoApiKey;
-
-    @Value("${mail.from.email:kumawatk2020@gmail.com}")
+    @Value("${spring.mail.username:}")
     private String fromEmail;
 
     public void sendBookingConfirmation(
@@ -28,37 +23,29 @@ public class EmailService {
             String theatreName, String showDate, String showTime,
             String format, List<String> seats, double totalAmount, String ticketId) {
 
-        if (brevoApiKey.isEmpty()) {
-            throw new IllegalStateException("BREVO_API_KEY not configured in environment");
+        if (mailSender == null) {
+            throw new IllegalStateException("JavaMailSender not configured — check MAIL_USERNAME/MAIL_PASSWORD");
+        }
+        if (fromEmail.isEmpty()) {
+            throw new IllegalStateException("MAIL_USERNAME env var is not set");
         }
 
-        String html = buildHtml(userName, movieTitle, theatreName, showDate,
-                showTime, format, String.join(", ", seats), totalAmount, ticketId);
-
         try {
-            Map<String, Object> payload = Map.of(
-                "sender",      Map.of("name", "BookMyShow", "email", fromEmail),
-                "to",          List.of(Map.of("email", toEmail, "name", userName)),
-                "subject",     "Booking Confirmed — " + movieTitle + " | BookMyShow",
-                "htmlContent", html
-            );
+            MimeMessage msg = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            helper.setSubject("Booking Confirmed — " + movieTitle + " | BookMyShow");
 
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest req = HttpRequest.newBuilder()
-                .uri(URI.create(BREVO_API))
-                .header("accept", "application/json")
-                .header("api-key", brevoApiKey)
-                .header("content-type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(mapper.writeValueAsString(payload)))
-                .build();
+            String seatsStr = String.join(", ", seats);
+            String html = buildHtml(userName, movieTitle, theatreName, showDate,
+                    showTime, format, seatsStr, totalAmount, ticketId);
+            helper.setText(html, true);
 
-            HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
-            if (resp.statusCode() >= 400) {
-                throw new RuntimeException("Brevo " + resp.statusCode() + ": " + resp.body());
-            }
-            System.out.println("[EMAIL] Sent to " + toEmail + " — status " + resp.statusCode());
+            mailSender.send(msg);
+            System.out.println("[EMAIL] Sent to " + toEmail);
         } catch (Exception e) {
-            throw new RuntimeException("Email failed: " + e.getMessage(), e);
+            throw new RuntimeException("SMTP error: " + e.getMessage(), e);
         }
     }
 
