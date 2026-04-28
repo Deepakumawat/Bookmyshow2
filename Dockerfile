@@ -3,8 +3,7 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
-ARG VITE_GOOGLE_CLIENT_ID
-ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
+ENV VITE_GOOGLE_CLIENT_ID=562767659756-luirrkk2vf1ld6jt7j6n7ujunu3c4kdb.apps.googleusercontent.com
 RUN npm run build
 
 FROM maven:3.9-eclipse-temurin-21 AS backend-build
