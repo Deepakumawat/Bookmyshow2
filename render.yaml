@@ -4,6 +4,7 @@ services:
     env: docker
     region: oregon
     plan: free
+    healthCheckPath: /
     envVars:
       - key: SPRING_DATA_MONGODB_URI
         sync: false
@@ -13,5 +14,9 @@ services:
         sync: false
       - key: VITE_GOOGLE_CLIENT_ID
         value: 562767659756-luirrkk2vf1ld6jt7j6n7ujunu3c4kdb.apps.googleusercontent.com
+      - key: MAIL_USERNAME
+        value: kumawatk2020@gmail.com
+      - key: MAIL_PASSWORD
+        sync: false
     dockerBuildArgs:
       - VITE_GOOGLE_CLIENT_ID=562767659756-luirrkk2vf1ld6jt7j6n7ujunu3c4kdb.apps.googleusercontent.com
