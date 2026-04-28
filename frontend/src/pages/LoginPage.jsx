@@ -2,11 +2,10 @@ import { useState, useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { UserContext } from '../context/UserContext';
-import AuthService from '../services/AuthService';
 import '../styles/bms-theme.css';
 import './LoginPage.css';
 
-const API = import.meta.env.VITE_API_BASE || '';
+const API = window.location.hostname === 'localhost' ? 'http://localhost:8080' : window.location.origin;
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -28,14 +27,33 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) { setError('Please fill in all fields.'); return; }
+    if (!email) { setError('Please enter your email.'); return; }
     setLoading(true); setError('');
     try {
-      const userData = await AuthService.login(email, password);
-      updateUser({ id: userData.id, name: userData.name || email, email: userData.email || email, isLoggedIn: true });
+      // Use MongoDB — H2 is in-memory and resets on server restart
+      let userData;
+      try {
+        const loginRes = await fetch(`${API}/api/mongo/users/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        });
+        userData = await loginRes.json();
+        if (!loginRes.ok) throw new Error('not found');
+      } catch {
+        // Auto-register if not found
+        const regRes = await fetch(`${API}/api/mongo/users/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: email.split('@')[0], email: email.trim().toLowerCase(), city: 'Mumbai' }),
+        });
+        userData = await regRes.json();
+        if (!regRes.ok) throw new Error(userData.error || 'Registration failed');
+      }
+      updateUser({ id: userData.id, name: userData.name, email: userData.email, isLoggedIn: true });
       navigate(redirect);
     } catch (err) {
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError(err.message || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
