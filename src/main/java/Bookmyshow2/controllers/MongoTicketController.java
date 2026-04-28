@@ -4,6 +4,7 @@ import Bookmyshow2.mongo.MongoTicketRepository;
 import Bookmyshow2.mongo.MongoUserRepository;
 import Bookmyshow2.mongo.TicketDocument;
 import Bookmyshow2.mongo.UserDocument;
+import Bookmyshow2.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class MongoTicketController {
 
     @Autowired private MongoTicketRepository ticketRepo;
     @Autowired private MongoUserRepository   userRepo;
+    @Autowired private EmailService emailService;
 
     // ── Book Ticket ───────────────────────────────────────────────────────
     @PostMapping("/book")
@@ -63,6 +65,13 @@ public class MongoTicketController {
                 });
             }
             ticket = saved;
+
+            // Send confirmation email
+            emailService.sendBookingConfirmation(
+                userEmail, userName, movieTitle,
+                theatreName, showDate, showTime, format,
+                seats, ticket.getTotalAmount(), ticket.getId()
+            );
 
             return ResponseEntity.ok(Map.of(
                 "message",     "Booking confirmed!",
