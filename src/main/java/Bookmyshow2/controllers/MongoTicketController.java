@@ -112,4 +112,19 @@ public class MongoTicketController {
         List<TicketDocument> tickets = ticketRepo.findByUserId(userId);
         return ResponseEntity.ok(Map.of("total", tickets.size(), "tickets", tickets));
     }
+
+    // ── Test Email ────────────────────────────────────────────────────────
+    @GetMapping("/test-email/{email}")
+    public ResponseEntity<?> testEmail(@PathVariable String email) {
+        try {
+            emailService.sendBookingConfirmation(
+                email, "Test User", "Test Movie",
+                "Test Theatre", "Monday, 28 April 2026", "7:00 PM", "2D",
+                List.of("A1", "A2"), 660.0, "TEST-" + System.currentTimeMillis()
+            );
+            return ResponseEntity.ok(Map.of("message", "Email sent to " + email));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+        }
+    }
 }

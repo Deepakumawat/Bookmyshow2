@@ -31,7 +31,8 @@ export default function LoginPage() {
     if (!email || !password) { setError('Please fill in all fields.'); return; }
     setLoading(true); setError('');
     try {
-      await AuthService.login(email, password);
+      const userData = await AuthService.login(email, password);
+      updateUser({ id: userData.id, name: userData.name || email, email: userData.email || email, isLoggedIn: true });
       navigate(redirect);
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.');
