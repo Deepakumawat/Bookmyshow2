@@ -122,10 +122,7 @@ export default function PaymentPage() {
       existing.unshift(booking);
       localStorage.setItem('bms_bookings', JSON.stringify(existing));
 
-      // Navigate immediately — don't block on backend
-      navigate('/confirmation', { state: { booking } });
-
-      // Save to backend in background (fire and forget)
+      // Fire backend request (sends email), then navigate after 100ms
       const loggedInUser = getLoggedInUser(user);
       if (loggedInUser) {
         fetch(`${API}/api/mongo/tickets/book`, {
@@ -149,6 +146,7 @@ export default function PaymentPage() {
           }),
         }).catch(e => console.error('Backend booking save failed:', e));
       }
+      setTimeout(() => navigate('/confirmation', { state: { booking } }), 100);
     }, 2800);
   };
 
