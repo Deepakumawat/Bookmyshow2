@@ -1,52 +1,68 @@
 package Bookmyshow2.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.internet.MimeMessage;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.List;
 
 @Service
 public class EmailService {
 
-    @Autowired(required = false)
-    private JavaMailSender mailSender;
+    @Value("${resend.api.key:}")
+    private String resendApiKey;
 
-    @Value("${spring.mail.username:}")
-    private String fromEmail;
+    private final HttpClient http = HttpClient.newHttpClient();
 
     public void sendBookingConfirmation(
             String toEmail, String userName, String movieTitle,
             String theatreName, String city, String showDate, String showTime,
             String format, List<String> seats, double totalAmount, String ticketId) {
 
-        if (mailSender == null) {
-            throw new IllegalStateException("JavaMailSender not configured — check MAIL_USERNAME/MAIL_PASSWORD");
+        if (resendApiKey.isEmpty()) {
+            throw new IllegalStateException("RESEND_API_KEY env var is not set");
         }
-        if (fromEmail.isEmpty()) {
-            throw new IllegalStateException("MAIL_USERNAME env var is not set");
-        }
+
+        String seatsStr = String.join(", ", seats);
+        String html = buildHtml(userName, movieTitle, theatreName, city, showDate,
+                showTime, format, seatsStr, totalAmount, ticketId);
+
+        String body = """
+            {
+              "from": "BookMyShow <onboarding@resend.dev>",
+              "to": ["%s"],
+              "subject": "Booking Confirmed — %s | BookMyShow",
+              "html": %s
+            }
+            """.formatted(toEmail, movieTitle, toJson(html));
 
         try {
-            MimeMessage msg = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(msg, true, "UTF-8");
-            helper.setFrom(fromEmail);
-            helper.setTo(toEmail);
-            helper.setSubject("Booking Confirmed — " + movieTitle + " | BookMyShow");
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.resend.com/emails"))
+                .header("Authorization", "Bearer " + resendApiKey)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
 
-            String seatsStr = String.join(", ", seats);
-            String html = buildHtml(userName, movieTitle, theatreName, city, showDate,
-                    showTime, format, seatsStr, totalAmount, ticketId);
-            helper.setText(html, true);
-
-            mailSender.send(msg);
-            System.out.println("[EMAIL] Sent to " + toEmail);
+            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 200 && response.statusCode() < 300) {
+                System.out.println("[EMAIL] Sent to " + toEmail);
+            } else {
+                throw new RuntimeException("Resend API error " + response.statusCode() + ": " + response.body());
+            }
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("SMTP error: " + e.getMessage(), e);
+            throw new RuntimeException("Email error: " + e.getMessage(), e);
         }
+    }
+
+    private String toJson(String s) {
+        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"")
+                       .replace("\n", "\\n").replace("\r", "") + "\"";
     }
 
     private String buildHtml(String userName, String movieTitle, String theatreName,
