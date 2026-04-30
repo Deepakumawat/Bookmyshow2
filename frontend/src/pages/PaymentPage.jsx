@@ -122,37 +122,33 @@ export default function PaymentPage() {
       existing.unshift(booking);
       localStorage.setItem('bms_bookings', JSON.stringify(existing));
 
-      // Call backend to save + send confirmation email
+      // Navigate immediately — don't block on backend
+      navigate('/confirmation', { state: { booking } });
+
+      // Save to backend in background (fire and forget)
       const loggedInUser = getLoggedInUser(user);
       if (loggedInUser) {
-        try {
-          const res = await fetch(`${API}/api/mongo/tickets/book`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              userId:         loggedInUser.id || '',
-              userEmail:      loggedInUser.email,
-              userName:       loggedInUser.name || 'Guest',
-              movieTitle,
-              theatreName:    venue,
-              city,
-              showDate:       booking.date,
-              showTime:       time,
-              format:         state.showFormat || '2D',
-              seats,
-              seatType:       seatTier || 'GOLD',
-              baseAmount:     state.ticketsTotal || grandTotal,
-              convenienceFee: state.convenience || 0,
-              paymentMethod:  paymentLabel,
-            }),
-          });
-          if (!res.ok) console.error('Booking API error:', await res.text());
-        } catch (e) {
-          console.error('Backend booking save failed:', e);
-        }
+        fetch(`${API}/api/mongo/tickets/book`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId:         loggedInUser.id || '',
+            userEmail:      loggedInUser.email,
+            userName:       loggedInUser.name || 'Guest',
+            movieTitle,
+            theatreName:    venue,
+            city,
+            showDate:       booking.date,
+            showTime:       time,
+            format:         state.showFormat || '2D',
+            seats,
+            seatType:       seatTier || 'GOLD',
+            baseAmount:     state.ticketsTotal || grandTotal,
+            convenienceFee: state.convenience || 0,
+            paymentMethod:  paymentLabel,
+          }),
+        }).catch(e => console.error('Backend booking save failed:', e));
       }
-
-      navigate('/confirmation', { state: { booking } });
     }, 2800);
   };
 
