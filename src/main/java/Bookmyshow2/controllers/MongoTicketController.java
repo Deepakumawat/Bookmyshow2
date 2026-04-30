@@ -67,14 +67,19 @@ public class MongoTicketController {
             ticket = saved;
 
             // Send confirmation email (non-fatal — booking succeeds even if email fails)
-            try {
-                emailService.sendBookingConfirmation(
-                    userEmail, userName, movieTitle,
-                    theatreName, city, showDate, showTime, format,
-                    seats, ticket.getTotalAmount(), ticket.getId()
-                );
-            } catch (Exception emailEx) {
-                System.out.println("[EMAIL] Skipping email: " + emailEx.getMessage());
+            if (userEmail.isEmpty()) {
+                System.out.println("[EMAIL] Skipped — no userEmail provided");
+            } else {
+                try {
+                    emailService.sendBookingConfirmation(
+                        userEmail, userName, movieTitle,
+                        theatreName, city, showDate, showTime, format,
+                        seats, ticket.getTotalAmount(), ticket.getId()
+                    );
+                    System.out.println("[EMAIL] ✅ Sent to " + userEmail);
+                } catch (Exception emailEx) {
+                    System.err.println("[EMAIL] ❌ Failed to send to " + userEmail + ": " + emailEx.getMessage());
+                }
             }
 
             return ResponseEntity.ok(Map.of(
