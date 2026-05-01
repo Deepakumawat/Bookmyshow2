@@ -38,22 +38,22 @@ export default function SignupPage() {
 
         {error && <div className="bauth-error">⚠️ {error}</div>}
 
-        <form className="bauth-form" onSubmit={handleSubmit}>
+        <form className="bauth-form" onSubmit={handleSubmit} autoComplete="off">
           <div className="bauth-field">
             <label className="bauth-label">Full Name</label>
-            <input className="bauth-input" type="text" placeholder="Enter your full name" value={form.name} onChange={set('name')} />
+            <input className="bauth-input" type="text" placeholder="Enter your full name" value={form.name} onChange={set('name')} autoComplete="name" />
           </div>
           <div className="bauth-field">
             <label className="bauth-label">Email</label>
-            <input className="bauth-input" type="email" placeholder="Enter your email" value={form.email} onChange={set('email')} />
+            <input className="bauth-input" type="email" placeholder="Enter your email" value={form.email} onChange={set('email')} autoComplete="off" />
           </div>
           <div className="bauth-field">
             <label className="bauth-label">Password</label>
-            <input className="bauth-input" type="password" placeholder="Create a password (min 6 chars)" value={form.password} onChange={set('password')} />
+            <input className="bauth-input" type="password" placeholder="Create a password (min 6 chars)" value={form.password} onChange={set('password')} autoComplete="new-password" />
           </div>
           <div className="bauth-field">
             <label className="bauth-label">Confirm Password</label>
-            <input className="bauth-input" type="password" placeholder="Re-enter your password" value={form.confirm} onChange={set('confirm')} />
+            <input className="bauth-input" type="password" placeholder="Re-enter your password" value={form.confirm} onChange={set('confirm')} autoComplete="new-password" />
           </div>
           <button className="bms-btn-red bauth-submit-btn" type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Create Account'}
