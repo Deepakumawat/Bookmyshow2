@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmyshow-app
+  namespace: bookmyshow
+  labels:
+    app: bookmyshow
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bookmyshow
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0       # zero downtime — old pod stays until new is healthy
+  template:
+    metadata:
+      labels:
+        app: bookmyshow
+    spec:
+      containers:
+        - name: bookmyshow
+          image: deepakumawat/bookmyshow:latest   # change to your Docker Hub username
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: bookmyshow-secrets
+                  key: SPRING_DATA_MONGODB_URI
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bookmyshow-secrets
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookmyshow-secrets
+                  key: MAIL_PASSWORD
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bookmyshow-secrets
+                  key: OPENAI_API_KEY
+            - name: TMDB_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: bookmyshow-secrets
+                  key: TMDB_API_KEY
+          # Health checks — Kubernetes restarts pod if these fail
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 45
+            periodSeconds: 10
+          # Resource limits
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
