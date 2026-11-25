@@ -14,15 +14,14 @@ import java.util.*;
 @Service
 public class AgentService {
 
-    @Value("${openai.api.key:}")
-    private String apiKey;
+    @Autowired
+    private AiProvider ai;
 
     @Autowired
     private OpenAIService openAIService;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper mapper = new ObjectMapper();
-    private static final String OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
     private static final String SYSTEM_PROMPT = """
         You are Nova, BookMyShow's smart AI companion for %s, India. Today is %s.
@@ -50,8 +49,8 @@ public class AgentService {
         """;
 
     public Map<String, Object> chat(List<Map<String, Object>> messages, String city, String userName) throws Exception {
-        if (apiKey == null || apiKey.isBlank()) {
-            return Map.of("reply", "OpenAI API key not configured.", "type", "text", "data", Map.of(), "steps", List.of());
+        if (!ai.isConfigured()) {
+            return Map.of("reply", "AI API key not configured.", "type", "text", "data", Map.of(), "steps", List.of());
         }
 
         String nameLine = (userName != null && !userName.isBlank())
@@ -70,10 +69,10 @@ public class AgentService {
         for (int iter = 0; iter < 8; iter++) {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(apiKey);
+            headers.setBearerAuth(ai.apiKey());
 
             Map<String, Object> body = new LinkedHashMap<>();
-            body.put("model", "gpt-4o-mini");
+            ai.applyModel(body);
             body.put("messages", openAiMessages);
             body.put("tools", buildTools());
             body.put("tool_choice", "auto");
@@ -81,7 +80,7 @@ public class AgentService {
             body.put("max_tokens", 1000);
 
             ResponseEntity<String> resp = restTemplate.postForEntity(
-                    OPENAI_URL, new HttpEntity<>(body, headers), String.class);
+                    ai.chatUrl(), new HttpEntity<>(body, headers), String.class);
             JsonNode root    = mapper.readTree(resp.getBody());
             JsonNode choice  = root.path("choices").get(0);
             JsonNode message = choice.path("message");
