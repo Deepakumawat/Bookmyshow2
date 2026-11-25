@@ -25,10 +25,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/ai")
 public class AIController {
 
-    @Value("${openai.api.key:}")
-    private String apiKey;
 
     @Autowired private OpenAIService openAIService;
+    @Autowired private Bookmyshow2.service.AiProvider ai;
     @Autowired private AgentService agentService;
     @Autowired private ShowRepository showRepo;
     @Autowired private ShowSeatRepository showSeatRepo;
@@ -53,17 +52,15 @@ public class AIController {
     }
 
     // ── Whisper Speech-to-Text ─────────────────────────────────────────
-    private static final String WHISPER_URL    = "https://api.openai.com/v1/audio/transcriptions";
-    private static final String OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions";
     private final RestTemplate voiceRT = new RestTemplate();
 
     @PostMapping("/transcribe")
     public ResponseEntity<?> transcribe(@RequestParam("audio") MultipartFile audio) {
-        if (apiKey == null || apiKey.isBlank())
+        if (!ai.isConfigured())
             return ResponseEntity.ok(Map.of("text", ""));
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(apiKey);
+            headers.setBearerAuth(ai.apiKey());
             headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
             String filename = "audio." + getExtension(audio.getContentType());
@@ -72,12 +69,12 @@ public class AIController {
             };
 
             MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-            body.add("model", "whisper-1");
+            body.add("model", ai.transcribeModel());
             body.add("language", "en");
             body.add("file", audioResource);
 
             ResponseEntity<String> resp = voiceRT.postForEntity(
-                WHISPER_URL, new HttpEntity<>(body, headers), String.class);
+                ai.transcribeUrl(), new HttpEntity<>(body, headers), String.class);
 
             com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(resp.getBody());
             String text = root.path("text").asText("").trim();
@@ -97,8 +94,8 @@ public class AIController {
 
     @PostMapping("/voice")
     public ResponseEntity<?> voice(@RequestBody Map<String, Object> request) {
-        if (apiKey == null || apiKey.isBlank())
-            return ResponseEntity.ok(Map.of("reply", "OpenAI API key not configured."));
+        if (!ai.isConfigured())
+            return ResponseEntity.ok(Map.of("reply", "AI API key not configured."));
         try {
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> messages =
@@ -108,20 +105,20 @@ public class AIController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(apiKey);
+            headers.setBearerAuth(ai.apiKey());
 
             List<Map<String, Object>> openAiMessages = new ArrayList<>();
             openAiMessages.add(Map.of("role", "system", "content", system));
             openAiMessages.addAll(messages);
 
             Map<String, Object> body = new java.util.LinkedHashMap<>();
-            body.put("model", "gpt-4o-mini");
+            ai.applyModel(body);
             body.put("messages", openAiMessages);
             body.put("temperature", 0.85);
             body.put("max_tokens", 150);
 
             ResponseEntity<String> resp = voiceRT.postForEntity(
-                OPENAI_CHAT_URL, new HttpEntity<>(body, headers), String.class);
+                ai.chatUrl(), new HttpEntity<>(body, headers), String.class);
 
             com.fasterxml.jackson.databind.JsonNode root = mapper.readTree(resp.getBody());
             String reply = root.path("choices").get(0).path("message").path("content").asText("...");

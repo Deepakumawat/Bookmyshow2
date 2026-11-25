@@ -18,8 +18,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class OpenAIService {
 
-    @Value("${openai.api.key:}")
-    private String apiKey;
+    @Autowired
+    private AiProvider ai;
 
     @Autowired
     private AICacheRepository mongoCache;
@@ -30,7 +30,6 @@ public class OpenAIService {
     // L1: in-memory cache (fast, lost on restart)
     private final Map<String, CacheEntry> memCache = new ConcurrentHashMap<>();
 
-    private static final String OPENAI_URL  = "https://api.openai.com/v1/chat/completions";
     private static final long   MEM_TTL_MS  = 60 * 60 * 1000L;   // 1 hour in memory
     private static final long   MONGO_TTL_S = 24 * 60 * 60L;     // 24 hours in MongoDB
 
@@ -58,17 +57,17 @@ public class OpenAIService {
             }
         } catch (Exception ignored) {}
 
-        // 3. Call OpenAI API
-        if (apiKey == null || apiKey.isBlank()) {
-            throw new RuntimeException("OpenAI API key not configured");
+        // 3. Call the AI provider (Groq or OpenAI, see AiProvider)
+        if (!ai.isConfigured()) {
+            throw new RuntimeException("AI API key not configured (set GROQ_API_KEY or OPENAI_API_KEY)");
         }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(apiKey);
+        headers.setBearerAuth(ai.apiKey());
 
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("model", "gpt-4o-mini");
+        ai.applyModel(body);
         body.put("response_format", Map.of("type", "json_object"));
         body.put("temperature", 0.7);
         body.put("max_tokens", 3000);
@@ -78,7 +77,7 @@ public class OpenAIService {
         ));
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity(OPENAI_URL, request, String.class);
+        ResponseEntity<String> response = restTemplate.postForEntity(ai.chatUrl(), request, String.class);
 
         try {
             JsonNode root    = mapper.readTree(response.getBody());
